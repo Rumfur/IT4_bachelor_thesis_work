@@ -1,41 +1,70 @@
-import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-import MainMenuScreen from './MainMenuScreen';
-import SpeedTypingTestScreen from './SpeedTypingTestScreen';
-import RssScreen from './RssScreen';
-import NewsArticleScreen from './NewsArticleScreen';
-import ExtraContentScreen from './ExtraContentScreen';
-import ProfileScreen from './ProfileScreen';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import React from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
+import MainMenuScreen from "./MainMenuScreen";
+import SpeedTypingTestScreen from "./SpeedTypingTestScreen";
+import NewsArticleScreen from "./NewsArticleScreen";
+import ExtraContentScreen from "./ExtraContentScreen";
+import ProfileScreen from "./ProfileScreen";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import { StyleSheet } from 'react-native';
-
+import { StyleSheet } from "react-native";
 
 const Stack = createStackNavigator();
 
+export let storedValues = {
+  bgColor: "black", 
+  boughtDesigns: "black,", 
+  newsSite: "text", 
+  newsArticle: "This is a temporary text that is used in the speed typing test"
+}
+
+export const syncStoredData = async () => {
+  try {
+    const values = {
+      bgColor: await AsyncStorage.getItem("bgColor"), 
+      boughtDesigns: await AsyncStorage.getItem("boughtDesigns"),
+      newsSite: await AsyncStorage.getItem("newsSite"),
+      newsArticle: await AsyncStorage.getItem("newsArticle")
+    };
+    storedValues = values
+    if (storedValues.bgColor === null) {
+      console.log("Reset")
+      AsyncStorage.setItem("bgColor", "black")
+    }
+    if (storedValues.boughtDesigns === null) {
+      AsyncStorage.setItem("boughtDesigns", "black,")
+      console.log("ResetDesigns")
+    }
+    if (storedValues.newsSite === null) {
+      AsyncStorage.setItem("newsSite", "text")
+    }
+    if (storedValues.newsArticle === null) {
+      AsyncStorage.setItem("newsArticle", "This is a temporary text that is used in the speed typing test")
+    }
+    console.log(values) 
+  } catch (error) {
+    console.log("Error in async data: " + error)
+  }
+};
+
+export const getBGColor = async () => {
+  const bgColor = await AsyncStorage.getItem("bgColor")
+  console.log(bgColor)
+  return bgColor
+}
+
 export default function App() {
-  if (AsyncStorage.getItem("bgColor") === null) {
-    AsyncStorage.setItem("bgColor", "black")
-  }
-  if (AsyncStorage.getItem("boughtDesigns") === null) {
-    AsyncStorage.setItem("boughtDesigns", "black,")
-  }
-  if (AsyncStorage.getItem("newsSite") === null) {
-    AsyncStorage.setItem("newsSite", "text")
-  }
-  if (AsyncStorage.getItem("newsArticle") === null) {
-    AsyncStorage.setItem("newsArticle", "none")
-  }
+  syncStoredData()
+
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="MainMenu">
-        <Stack.Screen name="MainMenu" component={MainMenuScreen} options={{ title: 'Main Menu' }} />
-        <Stack.Screen name="SpeedTypingTest" component={SpeedTypingTestScreen} options={{ title: 'Speed Typing Test' }} />
-        <Stack.Screen name="NewsArticles" component={NewsArticleScreen} options={{ title: 'News Article Select' }} />
-        <Stack.Screen name="Rss" component={RssScreen} options={{ title: 'Rss Test' }} />
-        <Stack.Screen name="ExtraContent" component={ExtraContentScreen} options={{ title: 'Extra Content' }} />
-        <Stack.Screen name="Settings" component={ProfileScreen} options={{ title: 'Settings' }} />
+        <Stack.Screen name="MainMenu" component={MainMenuScreen} options={{ title: "Main Menu",  headerShown: false }} />
+        <Stack.Screen name="SpeedTypingTest" component={SpeedTypingTestScreen} options={{ title: "Speed Typing Test",  headerShown: false }} />
+        <Stack.Screen name="NewsArticles" component={NewsArticleScreen} options={{ title: "News Article Select",  headerShown: false }} />
+        <Stack.Screen name="ExtraContent" component={ExtraContentScreen} options={{ title: "Extra Content",  headerShown: false }} />
+        <Stack.Screen name="Settings" component={ProfileScreen} options={{ title: "Settings",  headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -44,25 +73,24 @@ export default function App() {
 export const baseStyles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: AsyncStorage.getItem("bgColor"),
+    justifyContent: "center",
+    alignItems: "center",
   },
   modalContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
   modalContent: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     padding: 20,
     borderRadius: 10,
-    alignItems: 'left',
+    alignItems: "left",
   },
   modalTitle: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 10,
   },
   buttonBase: {
@@ -85,26 +113,21 @@ export const baseStyles = StyleSheet.create({
     width: "85%"
   },
   buttonD0: {
-    backgroundColor: "black",
-    color: "white"
+    backgroundColor: "black"
   },
   buttonD1: {
-    backgroundColor: "white"
+    backgroundColor: "green"
   },
   buttonD2: {
-    backgroundColor: "blue",
-    color: "white"
+    backgroundColor: "blue"
   },
   buttonD3: {
-    backgroundColor: "red",
-    color: "white"
+    backgroundColor: "red"
   },
   buttonD4: {
-    backgroundColor: "green",
-    color: "white"
+    backgroundColor: "pink"
   },
   buttonD5: {
-    backgroundColor: "pink",
-    color: "white"
+    backgroundColor: "purple"
   },
 });

@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React, { useEffect, useState } from "react";
+import { View, Text, StyleSheet, Button } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
 const Rss = () => {
@@ -10,22 +11,11 @@ const Rss = () => {
         // { // https://cors-anywhere.herokuapp.com/
         // const RSS_URL = `https://cors-anywhere.herokuapp.com/https://www.lsm.lv/rss`; // https://www.lsm.lv/rss/ // https://www.delfi.lv/rss/index.xml
         {
-            var feed = "https://feeds.feedburner.com/raymondcamdensblog?format=xml";
-
+            var feed = "http://127.0.0.1/run";
             fetch(feed)
                 .then(response => response.text())
                 .then(data => {
-                    // Parse the XML response
-                    const parser = new DOMParser();
-                    const xmlDoc = parser.parseFromString(data, "text/xml");
-                    const items = xmlDoc.querySelectorAll("item");
-        
-                    items.forEach(item => {
-                        console.log("------------------------");
-                        console.log("title      : " + item.querySelector("title").textContent);
-                        console.log("link       : " + item.querySelector("link").textContent);
-                        console.log("description: " + item.querySelector("description").textContent);
-                    });
+                    console.log(data)
                 })
                 .catch(error => console.error("Error fetching RSS:", error));
         }
@@ -47,10 +37,10 @@ const Rss = () => {
                 // );
                 // })
             )}
-            <button
+            <Button title="Fetch rss"
                 style={styles.buttonf}
-                onClick={fetchRss}
-            >Fetch rss</button>
+                onPress={fetchRss}>
+            </Button>
         </View>
     )
 };

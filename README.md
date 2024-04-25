@@ -14,8 +14,16 @@ Step 4 : install requirenments in project folder:
 - npm install @react-navigation/stack
 - npm install react-native-rss-parser
 - npm install express
+- npm install react-native-gesture-handler
+- npm install @react-native-async-storage/async-storage
+- npm install expo-linear-gradient
 
-Step 5 : start the project:
+Step 5 : in backend folder install requirenments:
+- pip install fastapi
+- pip install uvicorn
+- pip install feedparser
+
+Step 6 : start the project:
 - expo start
 
 
