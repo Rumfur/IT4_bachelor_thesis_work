@@ -7,18 +7,15 @@ const Rss = () => {
     const [loading, setLoading] = useState(true); // Declare loading state variable
     // const [data, setData] = useState(""); // Declare data state variable
 
-    const fetchRss = () => 
-        // { // https://cors-anywhere.herokuapp.com/
-        // const RSS_URL = `https://cors-anywhere.herokuapp.com/https://www.lsm.lv/rss`; // https://www.lsm.lv/rss/ // https://www.delfi.lv/rss/index.xml
-        {
-            var feed = "http://127.0.0.1/run";
-            fetch(feed)
-                .then(response => response.text())
-                .then(data => {
-                    console.log(data)
-                })
-                .catch(error => console.error("Error fetching RSS:", error));
-        }
+    const fetchRss = () => {
+        var feed = "http://127.0.0.1/run";
+        fetch(feed)
+            .then(response => response.text())
+            .then(data => {
+                console.log(data)
+            })
+            .catch(error => console.error("Error fetching RSS:", error));
+    }
     
     return(
         <View style={styles.container}>
@@ -26,16 +23,6 @@ const Rss = () => {
                 <Text>Loading...</Text>
             ) : (
                 <br></br>
-                // <Text>{data}</Text>
-                // data.map((post) => {
-                // return (
-                //     <View>
-                //         <Text style={styles.title}>RSS</Text>
-                //         <Text style={styles.title}>"{post.title}"</Text>
-                //         <Text>"{post.body}"</Text>
-                //     </View>
-                // );
-                // })
             )}
             <Button title="Fetch rss"
                 style={styles.buttonf}

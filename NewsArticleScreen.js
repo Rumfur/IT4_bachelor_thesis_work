@@ -1,108 +1,223 @@
 import React, { useState } from "react";
-import { View, StyleSheet, Modal, Text, TouchableOpacity } from "react-native";
+import { View, StyleSheet, Modal, TextInput, Text, TouchableOpacity } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { baseStyles } from "./App";
+import { baseStyles, storedValues } from "./App";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const NewsArticleScreen = ({ navigation }) => {
+  const [currentArticleNo, setSelectedArticleNo] = useState(parseInt(storedValues.newsArticle))
   const [modalVisible, setModalVisible] = useState(false);
-  const [showNewsSiteSelected, setNewsSiteSelected] = useState(false);
+  const [textBoxText, setTextBoxText] = useState("");
+  const [textModalVisible, setTextModalVisible] = useState(false);
 
   const selectNewsSite = (newsSite) => {
-    AsyncStorage.setItem("newsSite", newsSite);
-    setModalVisible(true);
-    setNewsSiteSelected(true);
+    AsyncStorage.setItem("newsSite", newsSite)
+    .then(
+      console.log("News site selected: " + newsSite)
+    )
+    .then(
+      storedValues.newsSite = newsSite
+    )
+    .then(
+      setModalVisible(true)
+    )
   };
 
-  const selectArticle = (newsArticle) => {
-    AsyncStorage.setItem("newsArticle", newsArticle);
-    setModalVisible(true);
-    setNewsSiteSelected(false);
+  const textInput = (text) => {
+    setTextBoxText(text);
+  }
+
+  const selectArticleNo = (articleNo) => {
+    console.log("article no: " + articleNo)
+    console.log("cur no: "+ currentArticleNo)
+    let number = currentArticleNo + articleNo
+    console.log(number)
+    if (number < 0) {
+      number = 0
+    }
+    AsyncStorage.setItem("newsArticle", toString(number))
+    .then(
+      storedValues.newsArticle = toString(number)
+    ).then(
+      setSelectedArticleNo(number)
+    )
   };
+
+  function setTestText() {
+    AsyncStorage.setItem("selectedText", textBoxText)
+    storedValues.selectedText = textBoxText
+    setTextModalVisible(true)
+  }
 
   return (
     <LinearGradient
-      colors={["#4facfe", "#00f2fe"]}
+      colors={storedValues.bgColor.split("I")}
       style={styles.gradientContainer}
     >
       <View style={baseStyles.container}>
-        <Text style={styles.titleText}>Speed Typing Prototype</Text>
-        <View style={styles.designContainer}>
-          {!AsyncStorage.getItem("newsSite") === "https://www.lsm.lv/rss/" ? (
+        <Text style={baseStyles.titleText}>News And Articles</Text>
+        {/* news site buttons*/}
+        <View style={styles.buttonContainer}>
+          {storedValues.newsSite == "https://www.lsm.lv/rss/" ? (
+
             <TouchableOpacity
-              style={[baseStyles.buttonBase, styles.buttonSelect]}
+              style={[baseStyles.buttonBase, styles.buttonSmallHeight]}
+              disabled={true}
+            >
+              <Text style={baseStyles.textB}>lsm.lv (selected)</Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              style={[baseStyles.buttonBase, styles.buttonSmallHeight]}
               onPress={() => { selectNewsSite("https://www.lsm.lv/rss/") }}
             >
-              <Text style={styles.buttonText}>lsm.lv</Text>
+              <Text style={baseStyles.textB}>lsm.lv</Text>
+            </TouchableOpacity>
+          )}
+          {storedValues.newsSite == "https://www.delfi.lv/rss/index.xml" ? (
+            <TouchableOpacity
+              style={[baseStyles.buttonBase, styles.buttonSmallHeight]}
+              disabled={true}
+            >
+              <Text style={baseStyles.textB}>delfi.lv (selected)</Text>
             </TouchableOpacity>
           ) : (
             <TouchableOpacity
-              style={[baseStyles.buttonBase, styles.buttonSelect]}
-              disabled={true}
-            >
-              <Text style={styles.buttonText}>lsm.lv (selected)</Text>
-            </TouchableOpacity>
-          )}
-          {!AsyncStorage.getItem("newsSite") === "https://www.delfi.lv/rss/index.xml" ? (
-            <TouchableOpacity
-              style={[baseStyles.buttonBase, styles.buttonSelect]}
+              style={[baseStyles.buttonBase, styles.buttonSmallHeight]}
               onPress={() => { selectNewsSite("https://www.delfi.lv/rss/index.xml") }}
             >
-              <Text style={styles.buttonText}>delfi.lv</Text>
-            </TouchableOpacity>
-          ) : (
-            <TouchableOpacity
-              style={[baseStyles.buttonBase, styles.buttonSelect]}
-              disabled={true}
-            >
-              <Text style={styles.buttonText}>delfi.lv (selected)</Text>
+              <Text style={baseStyles.textB}>delfi.lv</Text>
             </TouchableOpacity>
           )}
-          {!AsyncStorage.getItem("newsSite") === "https://feeds.feedburner.com/Apollolv-AllArticles" ? (
+          {storedValues.newsSite == "https://feeds.feedburner.com/Apollolv-AllArticles" ? (
             <TouchableOpacity
-              style={[baseStyles.buttonBase, styles.buttonSelect]}
-              onPress={() => { selectNewsSite("https://feeds.feedburner.com/Apollolv-AllArticles") }}
+              style={[baseStyles.buttonBase, styles.buttonSmallHeight]}
+              disabled={true}
             >
-              <Text style={styles.buttonText}>apollo.lv</Text>
+              <Text style={baseStyles.textB}>apollo.lv (selected)</Text>
             </TouchableOpacity>
           ) : (
             <TouchableOpacity
-              style={[baseStyles.buttonBase, styles.buttonSelect]}
+            style={[baseStyles.buttonBase, styles.buttonSmallHeight]}
+            onPress={() => { selectNewsSite("https://feeds.feedburner.com/Apollolv-AllArticles") }}
+            >
+              <Text style={baseStyles.textB}>apollo.lv</Text>
+            </TouchableOpacity>
+          )}
+          {storedValues.newsSite == "text" ? (
+            <TouchableOpacity
+              style={[baseStyles.buttonBase, styles.buttonSmallHeight]}
               disabled={true}
             >
-              <Text style={styles.buttonText}>apollo.lv (selected)</Text>
+              <Text style={baseStyles.textB}>Text input (selected)</Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+            style={[baseStyles.buttonBase, styles.buttonSmallHeight]}
+            onPress={() => { selectNewsSite("text") }}
+            >
+              <Text style={baseStyles.textB}>Text input</Text>
             </TouchableOpacity>
           )}
         </View>
         <View style={styles.buttonContainer}>
-          {!AsyncStorage.getItem("newsArticle") === "article" ? (
-            <TouchableOpacity
-              style={[baseStyles.buttonBase, styles.buttonSelect]}
-              onPress={() => { selectArticle("article") }}
-            >
-              <Text style={styles.buttonText}>article</Text>
-            </TouchableOpacity>
+          {storedValues.newsSite != "text" ? (
+            // news article number select
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity
+                style={[baseStyles.buttonBase, styles.buttonSmallHeight]}
+                onPress={() => { selectArticleNo(-1) }}
+                >
+                <Text style={baseStyles.textB}>←</Text>
+              </TouchableOpacity>
+              <Text style={[baseStyles.textB, styles.paddingTop]}>{currentArticleNo}</Text>
+              <TouchableOpacity
+                style={[baseStyles.buttonBase, styles.buttonSmallHeight]}
+                onPress={() => { selectArticleNo(-1) }}
+                >
+                <Text style={baseStyles.textB}>→</Text>
+              </TouchableOpacity>
+            </View>
           ) : (
-            <TouchableOpacity
-              style={[baseStyles.buttonBase, styles.buttonSelect]}
-              disabled={true}
-            >
-              <Text style={styles.buttonText}>article (selected)</Text>
-            </TouchableOpacity>
+            // news article number select
+            <View style={styles.buttonContainer}>
+              <View>
+              <TextInput
+                style={styles.inputBox}
+                value={textBoxText}
+                onChangeText={textInput}
+                placeholder="Enter text you wish to speed type..."
+                multiline={true}
+                autoFocus={true}
+                editable={true}
+              />
+              </View>
+              <View>
+              <TouchableOpacity
+                style={[baseStyles.buttonPopUpClose]}
+                onPress={() => setTestText()}
+              >
+                <Text style={baseStyles.textB}>Accept text</Text>
+              </TouchableOpacity>
+              </View>
+            </View>
           )}
         </View>
+        {/* back to menu button*/}
         <TouchableOpacity
-          style={[baseStyles.buttonBase, baseStyles.buttonMid]}
+          style={[baseStyles.buttonTransparent]}
           onPress={() => navigation.navigate("MainMenu")}
-        >
-          <Text style={styles.buttonText}>Go back to menu</Text>
+          >
+          <Text style={baseStyles.textB}>Go back to menu</Text>
         </TouchableOpacity>
+        {/* pop up screen for selection confirmation*/}
         <Modal
           animationType="slide"
           transparent={true}
           visible={modalVisible}
+          onRequestClose={() => setModalVisible(false)}
         >
-          {/* Modal content */}
+          <View style={baseStyles.modalContainer}>
+            <View style={baseStyles.modalContent}>
+              {storedValues.newsSite != "text" ? (
+                <Text style={baseStyles.modalTitle}>
+                  News site selected!
+                  You selected {storedValues.newsSite}.
+                </Text> 
+              ) : (
+                <Text style={baseStyles.modalTitle}>
+                  Text input selected!
+                  Input your desired text in the textbox!
+                </Text> 
+              )}
+              <TouchableOpacity
+                style={[baseStyles.buttonPopUpClose]}
+                onPress={() => setModalVisible(false)}
+              >
+                <Text style={baseStyles.textB}>X</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={textModalVisible}
+          onRequestClose={() => setTextModalVisible(false)}
+        >
+          <View style={baseStyles.modalContainer}>
+            <View style={baseStyles.modalContent}>
+              <Text style={baseStyles.modalTitle}>
+                Text accepted!
+              </Text> 
+              <TouchableOpacity
+                style={[baseStyles.buttonPopUpClose]}
+                onPress={() => setTextModalVisible(false)}
+              >
+                <Text style={baseStyles.textB}>X</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
         </Modal>
       </View>
     </LinearGradient>
@@ -119,7 +234,10 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     alignItems: "center",
   },
-  designContainer: {
+  buttonSmallHeight: {
+    height: "20%",
+  },
+  buttonContainer: {
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "top",
@@ -127,19 +245,21 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     marginTop: 20,
   },
-  buttonSelect: {
-    fontSize: 24,
-    backgroundColor: "white",
-    width: "40%",
-    height: "30%",
-    marginVertical: 5,
-    padding: 10,
-    borderRadius: 20,
+  paddingTop: {
+    paddingTop: 30
   },
-  buttonText: {
-    fontSize: 18,
-    fontWeight: "bold",
-    textAlign: "center",
+  inputBox: {
+    fontSize: 16,
+    height: 150,
+    width: "100%",
+    color: "white",
+    backgroundColor: "transparent",
+    borderColor: "black",
+    borderWidth: 3,
+    borderRadius: 20,
+    marginBottom: 20,
+    paddingHorizontal: 10,
+    textAlignVertical: "top",
   },
 });
 

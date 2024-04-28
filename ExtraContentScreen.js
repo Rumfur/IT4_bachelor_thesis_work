@@ -1,37 +1,40 @@
 import React, { useState } from "react";
-import { View, StyleSheet, Modal, Text, Button, TouchableOpacity } from "react-native";
+import { View, StyleSheet, Modal, Text, TouchableOpacity } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { baseStyles, storedValues, syncStoredData } from "./App";
 
 const ExtraContentScreen = ({ navigation }) => {
+  console.log(storedValues)
   const [showResultsModal, setShowBoughtPopUp] = useState(false);
 
   function buyContent(color) {
+    console.log(color)
     AsyncStorage.setItem("boughtDesigns", storedValues.boughtDesigns + color + ",");
-    syncStoredData();
+    storedValues.bgColor = color
     setShowBoughtPopUp(true);
   }
 
   const clearPurchases = () => {
     AsyncStorage.removeItem("boughtDesigns");
-    AsyncStorage.setItem("bgColor", "black");
+    AsyncStorage.setItem("bgColor", "blackIlightgray");
+    AsyncStorage.setItem("boughtDesigns", "blackIlightgray,")
     syncStoredData();
-    navigation.navigate("MainMenu")
+    navigation.navigate("StartScreen")
   }
 
   return (
     <LinearGradient
-      colors={["#4facfe", "#00f2fe"]}
+      colors={storedValues.bgColor.split("I")}
       style={styles.gradientContainer}
     >
       <View style={styles.container}>
-        <Text style={baseStyles.modalTitle}>Extra Content</Text>
+        <Text style={baseStyles.titleText}>Extra Content</Text>
         <View style={styles.designContainer}>
-          {!storedValues.boughtDesigns.split(",").includes("black") ? (
+          {!storedValues.boughtDesigns.split(",").includes("blackIlightgray") ? ( // black
             <TouchableOpacity
               style={[styles.buttonD, baseStyles.buttonD0]}
-              onPress={() => buyContent("black")}
+              onPress={() => buyContent("blackIlightgray")}
             >
               <Text style={styles.buttonTextW}>Buy design 0</Text>
               <Text style={styles.buttonTextW}>(1€)</Text>
@@ -41,13 +44,13 @@ const ExtraContentScreen = ({ navigation }) => {
               style={[styles.buttonD, baseStyles.buttonD0]}
               disabled={true}
             >
-              <Text style={styles.buttonTextW}>Bought</Text>
+              <Text style={styles.buttonTextW}>Owned</Text>
             </TouchableOpacity>
           )}
-          {!storedValues.boughtDesigns.split(",").includes("green") ? (
+          {!storedValues.boughtDesigns.split(",").includes("greenI#b3ff87") ? ( // green
             <TouchableOpacity
               style={[styles.buttonD, baseStyles.buttonD1]}
-              onPress={() => buyContent("green")}
+              onPress={() => buyContent("greenI#b3ff87")}
             >
               <Text style={styles.buttonTextW}>Buy design 1</Text>
               <Text style={styles.buttonTextW}>(2€)</Text>
@@ -57,13 +60,13 @@ const ExtraContentScreen = ({ navigation }) => {
               style={[styles.buttonD, baseStyles.buttonD1]}
               disabled={true}
             >
-              <Text style={styles.buttonTextW}>Bought</Text>
+              <Text style={styles.buttonTextW}>Owned</Text>
             </TouchableOpacity>
           )}
-          {!storedValues.boughtDesigns.split(",").includes("blue") ? (
+          {!storedValues.boughtDesigns.split(",").includes("#025dbfI#00f2fe") ? ( // blue
             <TouchableOpacity
               style={[styles.buttonD, baseStyles.buttonD2]}
-              onPress={() => buyContent("blue")}
+              onPress={() => buyContent("#025dbfI#00f2fe")}
             >
               <Text style={styles.buttonTextW}>Buy design 2</Text>
               <Text style={styles.buttonTextW}>(1€)</Text>
@@ -73,13 +76,13 @@ const ExtraContentScreen = ({ navigation }) => {
               style={[styles.buttonD, baseStyles.buttonD2]}
               disabled={true}
             >
-              <Text style={styles.buttonTextW}>Bought</Text>
+              <Text style={styles.buttonTextW}>Owned</Text>
             </TouchableOpacity>
           )}
-          {!storedValues.boughtDesigns.split(",").includes("red") ? (
+          {!storedValues.boughtDesigns.split(",").includes("redI#f5898d") ? ( // red
             <TouchableOpacity
               style={[styles.buttonD, baseStyles.buttonD3]}
-              onPress={() => buyContent("red")}
+              onPress={() => buyContent("redI#f5898d")}
             >
               <Text style={styles.buttonTextW}>Buy design 3</Text>
               <Text style={styles.buttonTextW}>(3€)</Text>
@@ -89,13 +92,13 @@ const ExtraContentScreen = ({ navigation }) => {
               style={[styles.buttonD, baseStyles.buttonD3]}
               disabled={true}
             >
-              <Text style={styles.buttonTextW}>Bought</Text>
+              <Text style={styles.buttonTextW}>Owned</Text>
             </TouchableOpacity>
           )}
-          {!storedValues.boughtDesigns.split(",").includes("pink") ? (
+          {!storedValues.boughtDesigns.split(",").includes("pinkI#ffe6e6") ? ( // pink
             <TouchableOpacity
               style={[styles.buttonD, baseStyles.buttonD4]}
-              onPress={() => buyContent("pink")}
+              onPress={() => buyContent("pinkI#ffe6e6")}
             >
               <Text style={styles.buttonTextW}>Buy design 4</Text>
               <Text style={styles.buttonTextW}>(5€)</Text>
@@ -105,13 +108,13 @@ const ExtraContentScreen = ({ navigation }) => {
               style={[styles.buttonD, baseStyles.buttonD4]}
               disabled={true}
             >
-              <Text style={styles.buttonTextW}>Bought</Text>
+              <Text style={styles.buttonTextW}>Owned</Text>
             </TouchableOpacity>
           )}
-          {!storedValues.boughtDesigns.split(",").includes("purple") ? (
+          {!storedValues.boughtDesigns.split(",").includes("purpleI#e6aded") ? ( // purple
             <TouchableOpacity
               style={[styles.buttonD, baseStyles.buttonD5]}
-              onPress={() => buyContent("purple")}
+              onPress={() => buyContent("purpleI#e6aded")}
             >
               <Text style={styles.buttonTextW}>Buy design 5</Text>
               <Text style={styles.buttonTextW}>(4€)</Text>
@@ -121,24 +124,24 @@ const ExtraContentScreen = ({ navigation }) => {
               style={[styles.buttonD, baseStyles.buttonD5]}
               disabled={true}
             >
-              <Text style={styles.buttonTextW}>Bought</Text>
+              <Text style={styles.buttonTextW}>Owned</Text>
             </TouchableOpacity>
           )}
         </View>
         <View style={styles.container}>
           <TouchableOpacity
-            style={[styles.buttonWide]}
+            style={[baseStyles.buttonBase, baseStyles.buttonWide, styles.clearPurchases]}
             onPress={clearPurchases}
           >
-            <Text style={styles.buttonTextB}>Clear purchases</Text>
+            <Text style={baseStyles.textB}>Clear purchases</Text>
           </TouchableOpacity>
         </View>
       </View>
       <TouchableOpacity
-        style={[baseStyles.buttonBase, baseStyles.buttonMid]}
+        style={[baseStyles.buttonTransparent]}
         onPress={() => navigation.navigate("MainMenu")}
       >
-        <Text style={styles.buttonTextB}>Go back to menu</Text>
+        <Text style={baseStyles.textB}>Go back to menu</Text>
       </TouchableOpacity>
       <Modal
         animationType="slide"
@@ -148,13 +151,14 @@ const ExtraContentScreen = ({ navigation }) => {
       >
         <View style={baseStyles.modalContainer}>
           <View style={baseStyles.modalContent}>
-            <Text style={baseStyles.modalTitle}>Design bought!</Text>
+            <Text style={baseStyles.modalTitle}>DESIGN BOUGHT!</Text>
             <Text>You can see it in your profile page.</Text>
-            <Button
-              title="Close"
-              style={[baseStyles.buttonBase, styles.buttonWide]}
+            <TouchableOpacity
+              style={[baseStyles.buttonPopUpClose]}
               onPress={() => setShowBoughtPopUp(false)}
-            />
+            >
+              <Text style={baseStyles.textB}>X</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </Modal>
@@ -180,6 +184,7 @@ const styles = StyleSheet.create({
     flex: 2,
     paddingHorizontal: 10,
     marginTop: 20,
+    marginBottom: 50
   },
   buttonD: {
     borderWidth: 5,
@@ -187,8 +192,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     width: "42%",
-    height: "30%",
-    marginHorizontal: 10
+    height: "40%",
+    margin: 10
+  },
+  clearPurchases: {
+    marginTop: 100,
+    width: "100%"
   },
   buttonTextW: {
     color: "white",
@@ -196,26 +205,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: 'center',
     textAlignVertical: 'center',
-  },
-  buttonTextB: {
-    color: "black",
-    fontSize: 20,
-    fontWeight: "bold",
-    textAlign: 'center',
-    textAlignVertical: 'center',
-  },
-  buttonWide: {
-    backgroundColor: "transparent",
-    borderWidth: 5,
-    borderColor: "#fff",
-    paddingVertical: 5,
-    paddingHorizontal: 10,
-    borderRadius: 30,
-    width: "100%",
-    height: "100%",
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom: 20,
   },
 });
 

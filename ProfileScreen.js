@@ -1,24 +1,26 @@
 import React from "react";
-import { View, StyleSheet, Button, TouchableOpacity, Text } from "react-native";
+import { View, StyleSheet, TouchableOpacity, Text } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { baseStyles, storedValues, syncStoredData } from "./App";
 import { LinearGradient } from "expo-linear-gradient";
 
 const ProfileScreen = ({ navigation }) => {
-  function selectDesign(color) {
-    AsyncStorage.setItem("bgColor", color);
-    navigation.navigate("MainMenu")
+  async function selectDesign(color) {
+    AsyncStorage.setItem("bgColor", color)
+    .then(storedValues.bgColor = color)
+    .then(navigation.navigate("StartScreen"));
   }
 
   return (
     <LinearGradient
-      colors={["#4facfe", "#00f2fe"]} // Set gradient colors
-      style={styles.gradientContainer} // Apply gradient to the container
+      colors={storedValues.bgColor.split("I")}
+      style={styles.gradientContainer}
     >
       <View id="profileBG" style={baseStyles.container}>
+        <Text style={baseStyles.titleText}>Profile Settings</Text>
         <View style={styles.designContainer}>
-          {storedValues.boughtDesigns.split(",").includes("black") ? (
-            storedValues.bgColor === "black" ? (
+          {storedValues.boughtDesigns.split(",").includes("blackIlightgray") ? (
+            storedValues.bgColor === "blackIlightgray" ? (
               <TouchableOpacity
                 style={[styles.buttonD, baseStyles.buttonD0]}
                 disabled={true}
@@ -28,14 +30,14 @@ const ProfileScreen = ({ navigation }) => {
             ) : (
               <TouchableOpacity
                 style={[styles.buttonD, baseStyles.buttonD0]}
-                onPress={() => selectDesign("black")}
+                onPress={() => selectDesign("blackIlightgray")}
               >
                 <Text style={styles.buttonTextW}>Select design 0</Text>
               </TouchableOpacity>
             )
           ) : null}
-          {storedValues.boughtDesigns.split(",").includes("green") ? (
-            storedValues.bgColor === "green" ? (
+          {storedValues.boughtDesigns.split(",").includes("greenI#b3ff87") ? (
+            storedValues.bgColor === "greenI#b3ff87" ? (
               <TouchableOpacity
                 style={[styles.buttonD, baseStyles.buttonD1]}
                 disabled={true}
@@ -45,14 +47,14 @@ const ProfileScreen = ({ navigation }) => {
             ) : (
               <TouchableOpacity
                 style={[styles.buttonD, baseStyles.buttonD1]}
-                onPress={() => selectDesign("green")}
+                onPress={() => selectDesign("greenI#b3ff87")}
               >
                 <Text style={styles.buttonTextW}>Select design 1</Text>
               </TouchableOpacity>
             )
           ) : null}
-          {storedValues.boughtDesigns.split(",").includes("blue") ? (
-            storedValues.bgColor === "blue" ? (
+          {storedValues.boughtDesigns.split(",").includes("#025dbfI#00f2fe") ? (
+            storedValues.bgColor === "#025dbfI#00f2fe" ? (
               <TouchableOpacity
                 style={[styles.buttonD, baseStyles.buttonD2]}
                 disabled={true}
@@ -62,14 +64,14 @@ const ProfileScreen = ({ navigation }) => {
             ) : (
               <TouchableOpacity
                 style={[styles.buttonD, baseStyles.buttonD2]}
-                onPress={() => selectDesign("blue")}
+                onPress={() => selectDesign("#025dbfI#00f2fe")}
               >
                 <Text style={styles.buttonTextW}>Select design 2</Text>
               </TouchableOpacity>
             )
           ) : null}
-          {storedValues.boughtDesigns.split(",").includes("red") ? (
-            storedValues.bgColor === "red" ? (
+          {storedValues.boughtDesigns.split(",").includes("redI#f5898d") ? (
+            storedValues.bgColor === "redI#f5898d" ? (
               <TouchableOpacity
                 style={[styles.buttonD, baseStyles.buttonD3]}
                 disabled={true}
@@ -79,14 +81,14 @@ const ProfileScreen = ({ navigation }) => {
             ) : (
               <TouchableOpacity
                 style={[styles.buttonD, baseStyles.buttonD3]}
-                onPress={() => selectDesign("red")}
+                onPress={() => selectDesign("redI#f5898d")}
               >
                 <Text style={styles.buttonTextW}>Select design 3</Text>
               </TouchableOpacity>
             )
           ) : null}
-          {storedValues.boughtDesigns.split(",").includes("pink") ? (
-            storedValues.bgColor === "pink" ? (
+          {storedValues.boughtDesigns.split(",").includes("pinkI#ffe6e6") ? (
+            storedValues.bgColor === "pinkI#ffe6e6" ? (
               <TouchableOpacity
                 style={[styles.buttonD, baseStyles.buttonD4]}
                 disabled={true}
@@ -96,14 +98,14 @@ const ProfileScreen = ({ navigation }) => {
             ) : (
               <TouchableOpacity
                 style={[styles.buttonD, baseStyles.buttonD4]}
-                onPress={() => selectDesign("pink")}
+                onPress={() => selectDesign("pinkI#ffe6e6")}
               >
                 <Text style={styles.buttonTextW}>Select design 4</Text>
               </TouchableOpacity>
             )
           ) : null}
-          {storedValues.boughtDesigns.split(",").includes("purple") ? (
-            storedValues.bgColor === "purple" ? (
+          {storedValues.boughtDesigns.split(",").includes("purpleI#e6aded") ? (
+            storedValues.bgColor === "purpleI#e6aded" ? (
               <TouchableOpacity
                 style={[styles.buttonD, baseStyles.buttonD5]}
                 disabled={true}
@@ -113,7 +115,7 @@ const ProfileScreen = ({ navigation }) => {
             ) : (
               <TouchableOpacity
                 style={[styles.buttonD, baseStyles.buttonD5]}
-                onPress={() => selectDesign("purple")}
+                onPress={() => selectDesign("purpleI#e6aded")}
               >
                 <Text style={styles.buttonTextW}>Select design 5</Text>
               </TouchableOpacity>
@@ -121,7 +123,7 @@ const ProfileScreen = ({ navigation }) => {
           ) : null}
         </View>
         <TouchableOpacity
-          style={[baseStyles.buttonBase, baseStyles.buttonMid]}
+          style={[[baseStyles.buttonTransparent]]}
           onPress={() => navigation.navigate("MainMenu")}
         >
           <Text style={styles.buttonTextB}>Go back to menu</Text>

@@ -1,10 +1,25 @@
 import React, { useState, useRef } from "react";
 import { View, StyleSheet, TextInput, Modal, Text, TouchableOpacity } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { baseStyles } from "./App";
+import { baseStyles, storedValues } from "./App";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const originalText = "The quick brown fox jumps over the lazy dog";
+
+function setlectTestText() {
+  if (storedValues.newsSite == "text") {
+    if (storedValues.selectedText.trim() == "") {
+      return "This is temporary text for the speed typing test that is used in case no text is supplied from the user."
+    } else {
+      return storedValues.selectedText
+    }
+  } else {
+    try {
+      return storedValues.newsData[storedValues.newsSite][storedValues.newsArticle]
+    } catch (error) {
+      return "Fetching article from news data failed. Write this text instead!"
+    }
+  }
+}
 
 export default function SpeedTypingTestScreen({ navigation }) {
   const [textBoxText, setTextBoxText] = useState("");
@@ -19,6 +34,12 @@ export default function SpeedTypingTestScreen({ navigation }) {
   const [showResultsModal, setShowResultsModal] = useState(false);
   const inputRef = useRef(null);
 
+  const testTextOriginal = toString(setlectTestText())
+  let textUserWritten = ""
+  let textWordsWritten = ""
+  let textCurrentWord = ""
+  let textWordsLeft = testTextOriginal.substring(0, testTextOriginal.indexOf(" "))
+
   const textInput = (text) => {
     if (!started) {
       setStarted(true);
@@ -26,15 +47,18 @@ export default function SpeedTypingTestScreen({ navigation }) {
     }
     setElapsedTime((Date.now() - startTime) / 1000); // seconds
 
-    if (text[text.length-1] === " ") {
-      const typedWordCount = text.trim().split(" ").length;
+    if (text[text.length-1] == " ") {
+      textUserWritten = textUserWritten + text
+      console.log(textUserWritten)
+      text = ""
+      const typedWordCount = textUserWritten.trim().split(" ").length;
       const wordsPerMin = Math.round((typedWordCount / elapsedTime) * 60);
       setTypingSpeed(wordsPerMin);
       setTotalTypedWords(typedWordCount);
-      setTotalTypedChars(text.trim().length);
+      setTotalTypedChars(textUserWritten.trim().length);
 
       // if text length == required text length, end test
-      if (typedWordCount === originalText.split(" ").length && text[text.length-1] === " ") {
+      if (textWordsLeft == "") {
         setFinished(true);
         inputRef.current.blur();
         setShowResultsModal(true);
@@ -59,23 +83,32 @@ export default function SpeedTypingTestScreen({ navigation }) {
 
   return (
     <LinearGradient
-      colors={["#4facfe", "#00f2fe"]}
+      colors={storedValues.bgColor.split("I")}
       style={styles.gradientContainer}
     >
       <View style={baseStyles.container}>
-        {started && (
+        {started ? (
           <Text style={styles.typingSpeed}>{typingSpeed} wpm</Text>
+        ) : (
+          null
         )}
-        <Text style={styles.originalText}>{originalText}</Text>
         {finished ? (
-          <TouchableOpacity
-            style={[baseStyles.buttonBase, baseStyles.buttonMid]}
-            onPress={resetTestValues}
-          >
-            <Text style={styles.buttonText}>Restart test</Text>
-          </TouchableOpacity>
+          <View>
+            <Text style={styles.originalText}>{testTextOriginal}</Text>
+            <TouchableOpacity
+              style={[baseStyles.buttonBase, baseStyles.buttonWide]}
+              onPress={resetTestValues}
+            >
+              <Text style={baseStyles.textB}>Restart test</Text>
+            </TouchableOpacity>
+          </View>
         ) : (
           <View>
+            <View style={styles.container}>
+              <Text style={baseStyles.textB}>{textWordsWritten}</Text>
+              <Text style={baseStyles.textB}>{textCurrentWord}</Text>
+              <Text style={baseStyles.textB}>{textWordsLeft}</Text>
+            </View>
             <TextInput
               ref={inputRef}
               style={styles.inputBox}
@@ -87,19 +120,19 @@ export default function SpeedTypingTestScreen({ navigation }) {
               editable={!finished}
             />
             <TouchableOpacity
-              style={[baseStyles.buttonBase, baseStyles.buttonMid]}
+              style={[baseStyles.buttonBase, baseStyles.buttonWide]}
               disabled={!started}
               onPress={resetTestValues}
             >
-              <Text style={styles.buttonText}>Restart test</Text>
+              <Text style={baseStyles.textB}>Restart test</Text>
             </TouchableOpacity>
           </View>
         )}
         <TouchableOpacity
-          style={[baseStyles.buttonBase, baseStyles.buttonMid]}
+          style={[baseStyles.buttonTransparent]}
           onPress={() => navigation.navigate("MainMenu")}
         >
-          <Text style={styles.buttonText}>Go back to menu</Text>
+          <Text style={baseStyles.textB}>Go back to menu</Text>
         </TouchableOpacity>
         <Modal
           animationType="slide"
@@ -117,10 +150,10 @@ export default function SpeedTypingTestScreen({ navigation }) {
               <Text>Words written wrong: {wrongWords}</Text>
               <Text>Accuracy: {(totalTypedWords - wrongWords) / totalTypedWords * 100}%</Text>
               <TouchableOpacity
-                style={[baseStyles.buttonBase, baseStyles.buttonMid]}
+                style={[baseStyles.buttonPopUpClose]}
                 onPress={() => setShowResultsModal(false)}
               >
-                <Text style={styles.buttonText}>Close</Text>
+                <Text style={baseStyles.textB}>X</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -136,12 +169,20 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+  rowContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 10,
+  },
   originalText: {
     fontSize: 24,
     marginBottom: 20,
+    borderWidth: 5,
+    borderRadius: 25,
     textAlign: "center",
     fontFamily: "Roboto",
-    backgroundColor: "purple"
+    backgroundColor: "white"
   },
   inputBox: {
     fontSize: 16,
@@ -160,9 +201,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     textAlign: "center",
   },
-  buttonText: {
-    color: "black",
-    fontSize: 16,
-    textAlign: "center",
-  },
+  maxWidth: {
+    width: "100%"
+  }
 });

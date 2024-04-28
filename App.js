@@ -6,6 +6,7 @@ import SpeedTypingTestScreen from "./SpeedTypingTestScreen";
 import NewsArticleScreen from "./NewsArticleScreen";
 import ExtraContentScreen from "./ExtraContentScreen";
 import ProfileScreen from "./ProfileScreen";
+import StartScreen from "./StartScreen";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { StyleSheet } from "react-native";
@@ -13,53 +14,126 @@ import { StyleSheet } from "react-native";
 const Stack = createStackNavigator();
 
 export let storedValues = {
-  bgColor: "black", 
-  boughtDesigns: "black,", 
+  bgColor: "blackIlightgray", 
+  boughtDesigns: "blackIlightgray,", 
   newsSite: "text", 
-  newsArticle: "This is a temporary text that is used in the speed typing test"
+  newsArticle: 0,
+  newsData: {},
+  selectedText: ""
+}
+
+const fetchNewsSiteRss = () => {
+  var feed = "http://127.0.0.1/run";
+  fetch(feed)
+      .then(response => response.text())
+      .then(data => {
+          try {
+            storedValues.newsData = JSON.parse(data)
+          } catch (error) {
+            console.log("Error during JSON parsing: " + error)
+          }
+      })
+      .catch(error => console.error("Error fetching RSS:", error));
+}
+
+function checkIfNull(value, defaultValue, key) {
+  if (value == null) {
+    AsyncStorage.setItem(key, defaultValue)
+    switch (key) {
+      case "bgColor":
+        storedValues.bgColor = defaultValue
+        break;
+      case "boughtDesigns":
+        storedValues.boughtDesigns = defaultValue
+        break;
+      case "newsSite":
+        storedValues.newsSite = defaultValue
+        break;
+      case "newsArticle":
+        storedValues.newsArticle = defaultValue
+        break;
+      case "selectedText":
+        storedValues.selectedText = defaultValue
+        break;
+    }
+  }
 }
 
 export const syncStoredData = async () => {
   try {
-    const values = {
-      bgColor: await AsyncStorage.getItem("bgColor"), 
-      boughtDesigns: await AsyncStorage.getItem("boughtDesigns"),
-      newsSite: await AsyncStorage.getItem("newsSite"),
-      newsArticle: await AsyncStorage.getItem("newsArticle")
-    };
-    storedValues = values
-    if (storedValues.bgColor === null) {
-      console.log("Reset")
-      AsyncStorage.setItem("bgColor", "black")
-    }
-    if (storedValues.boughtDesigns === null) {
-      AsyncStorage.setItem("boughtDesigns", "black,")
-      console.log("ResetDesigns")
-    }
-    if (storedValues.newsSite === null) {
-      AsyncStorage.setItem("newsSite", "text")
-    }
-    if (storedValues.newsArticle === null) {
-      AsyncStorage.setItem("newsArticle", "This is a temporary text that is used in the speed typing test")
-    }
-    console.log(values) 
+    storedValues.bgColor = await AsyncStorage.getItem("bgColor")
+    storedValues.boughtDesigns = await AsyncStorage.getItem("boughtDesigns")
+    storedValues.newsSite = await AsyncStorage.getItem("newsSite")
+    storedValues.newsArticle = parseInt(await AsyncStorage.getItem("newsArticle"))
+    storedValues.selectedText = parseInt(await AsyncStorage.getItem("selectedText"))
   } catch (error) {
     console.log("Error in async data: " + error)
+  } 
+  if (storedValues.bgColor == null) {
+    AsyncStorage.setItem("bgColor", "blackIlightgray")
+    storedValues.bgColor = "blackIlightgray"
   }
+  if (storedValues.boughtDesigns == null) {
+    AsyncStorage.setItem("boughtDesigns", "blackIlightgray,")
+    storedValues.boughtDesigns = "blackIlightgray,"
+  }
+  if (storedValues.newsSite == null) {
+    AsyncStorage.setItem("newsSite", "text")
+    storedValues.newsSite = "text"
+  }
+  if (storedValues.newsArticle == null) {
+    AsyncStorage.setItem("newsArticle", "0")
+    storedValues.newsArticle = 0
+  }
+  if (storedValues.selectedText == null) {
+    AsyncStorage.setItem("selectedText", "")
+    storedValues.newsArticle = ""
+  }
+  console.log(storedValues)
 };
 
-export const getBGColor = async () => {
-  const bgColor = await AsyncStorage.getItem("bgColor")
-  console.log(bgColor)
-  return bgColor
+function checkIfDataValid() {
+  if (storedValues.bgColor == null) {
+    AsyncStorage.setItem("bgColor", "blackIlightgray")
+    storedValues.bgColor = "blackIlightgray"
+  }
+  if (storedValues.boughtDesigns == null) {
+    AsyncStorage.setItem("boughtDesigns", "blackIlightgray,")
+    storedValues.boughtDesigns = "blackIlightgray,"
+  }
+  if (storedValues.newsSite == null) {
+    AsyncStorage.setItem("newsSite", "text")
+    storedValues.newsSite = "text"
+  }
+  if (storedValues.newsArticle == null) {
+    AsyncStorage.setItem("newsArticle", "0")
+    storedValues.newsArticle = 0
+  }
+  if (storedValues.selectedText == null) {
+    AsyncStorage.setItem("selectedText", "")
+    storedValues.newsArticle = ""
+  }
+}
+
+export async function setValues(){
+  await syncStoredData().then(
+    checkIfDataValid()
+  ).then(
+    console.log("Last check")
+  ).then(
+    console.log(storedValues)
+  )
 }
 
 export default function App() {
-  syncStoredData()
+  setValues()
+  fetchNewsSiteRss()
+
 
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="MainMenu">
+      <Stack.Navigator initialRouteName="StartScreen">
+      <Stack.Screen name="StartScreen" component={StartScreen} options={{ title: "Start Screen",  headerShown: false }} />
         <Stack.Screen name="MainMenu" component={MainMenuScreen} options={{ title: "Main Menu",  headerShown: false }} />
         <Stack.Screen name="SpeedTypingTest" component={SpeedTypingTestScreen} options={{ title: "Speed Typing Test",  headerShown: false }} />
         <Stack.Screen name="NewsArticles" component={NewsArticleScreen} options={{ title: "News Article Select",  headerShown: false }} />
@@ -75,6 +149,24 @@ export const baseStyles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+  },
+  titleTextBig: {
+    fontSize: 100,
+  },
+  titleText: {
+    fontSize: 32,
+    fontWeight: "bold",
+    color: "#fff",
+    textShadowColor: "#000",
+    textShadowOffset: { width: 2, height: 2 },
+    textShadowRadius: 5,
+    textAlign: 'center',
+    textAlignVertical: 'center',
+    marginTop: 30,
+    marginBottom: 30
+  },
+  titleTextBig: {
+    fontSize: 50,
   },
   modalContainer: {
     flex: 1,
@@ -94,15 +186,48 @@ export const baseStyles = StyleSheet.create({
     marginBottom: 10,
   },
   buttonBase: {
+    backgroundColor: "white",
     fontSize: 16,
     fontWeight: "bold",
     padding: 15,
-    borderRadius: 5,
+    borderRadius: 10,
     margin: 15,
   },
-  buttonDesign: {
+  buttonTransparent: {
+    backgroundColor: "transparent",
+    borderWidth: 5,
+    borderColor: "#fff",
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 30,
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 20,
+  },
+  buttonPopUpClose: {
+    borderWidth: 4,
+    borderRadius: 30,
+    alignItems: "center",
+    justifyContent: "center",
+    width: "90%",
+    padding: 5,
+    margin: 10
+  },
+  textB: {
+    color: "black",
+    fontSize: 20,
+    fontWeight: "bold",
+    textAlign: 'center',
+    textAlignVertical: 'center',
+  },
+  buttonSmall: {
+    backgroundColor: "White",
+  },
+  buttonSemiMid: {
     width: "40%",
-    height: "25%"
+    height: "35%",
+    padding: 15,
+    margin: 15
   },
   buttonMid: {
     backgroundColor: "white",
@@ -111,6 +236,9 @@ export const baseStyles = StyleSheet.create({
   buttonWide: {
     backgroundColor: "white",
     width: "85%"
+  },
+  buttonWhite: {
+    backgroundColor: "white",
   },
   buttonD0: {
     backgroundColor: "black"
