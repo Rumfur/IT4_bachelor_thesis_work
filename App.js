@@ -36,28 +36,6 @@ const fetchNewsSiteRss = () => {
       .catch(error => console.error("Error fetching RSS:", error));
 }
 
-function checkIfNull(value, defaultValue, key) {
-  if (value == null) {
-    AsyncStorage.setItem(key, defaultValue)
-    switch (key) {
-      case "bgColor":
-        storedValues.bgColor = defaultValue
-        break;
-      case "boughtDesigns":
-        storedValues.boughtDesigns = defaultValue
-        break;
-      case "newsSite":
-        storedValues.newsSite = defaultValue
-        break;
-      case "newsArticle":
-        storedValues.newsArticle = defaultValue
-        break;
-      case "selectedText":
-        storedValues.selectedText = defaultValue
-        break;
-    }
-  }
-}
 
 export const syncStoredData = async () => {
   try {
@@ -115,6 +93,27 @@ function checkIfDataValid() {
   }
 }
 
+async function validateAsyncStorage() {
+  if (await AsyncStorage.getItem("bgColor") == null) {
+    AsyncStorage.setItem("bgColor", "blackIlightgray")
+  }
+  if (await AsyncStorage.getItem("boughtDesigns") == null) {
+    AsyncStorage.setItem("boughtDesigns", "blackIlightgray,")
+  }
+  if (await AsyncStorage.getItem("newsSite") == null) {
+    AsyncStorage.setItem("newsSite", "text")
+    storedValues.newsSite = "text"
+  }
+  if (await AsyncStorage.getItem("newsArticle") == null) {
+    AsyncStorage.setItem("newsArticle", "0")
+    storedValues.newsArticle = 0
+  }
+  if (await AsyncStorage.getItem("selectedText") == null) {
+    AsyncStorage.setItem("selectedText", "")
+    storedValues.newsArticle = ""
+  }
+}
+
 export async function setValues(){
   await syncStoredData().then(
     checkIfDataValid()
@@ -128,7 +127,7 @@ export async function setValues(){
 export default function App() {
   setValues()
   fetchNewsSiteRss()
-
+  validateAsyncStorage()
 
   return (
     <NavigationContainer>
