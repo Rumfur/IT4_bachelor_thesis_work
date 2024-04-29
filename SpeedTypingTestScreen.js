@@ -6,18 +6,18 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
 function setlectTestText() {
-  if (storedValues.newsSite == "text") {
-    if (storedValues.selectedText.trim() == "") {
-      return "This is temporary text for the speed typing test that is used in case no text is supplied from the user."
+  try {
+    if (storedValues.newsSite == "text") {
+      if (storedValues.selectedText.trim() == "") {
+        return "This is temporary text for the speed typing test that is used in case no text is supplied from the user."
+      } else {
+        return storedValues.selectedText
+      }
     } else {
-      return storedValues.selectedText
+        return storedValues.newsData[storedValues.newsSite][storedValues.newsArticle]
     }
-  } else {
-    try {
-      return storedValues.newsData[storedValues.newsSite][storedValues.newsArticle]
-    } catch (error) {
-      return "Fetching article from news data failed. Write this text instead!"
-    }
+  } catch (error) {
+    return "Fetching article from news data failed. Write this text instead!"
   }
 }
 
