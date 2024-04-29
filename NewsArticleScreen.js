@@ -104,6 +104,21 @@ const NewsArticleScreen = ({ navigation }) => {
               <Text style={baseStyles.textB}>apollo.lv</Text>
             </TouchableOpacity>
           )}
+          {storedValues.newsSite == "https://www.la.lv/feed" ? (
+            <TouchableOpacity
+              style={[baseStyles.buttonBase, styles.buttonSmallHeight]}
+              disabled={true}
+            >
+              <Text style={baseStyles.textB}>la.lv (selected)</Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+            style={[baseStyles.buttonBase, styles.buttonSmallHeight]}
+            onPress={() => { selectNewsSite("https://www.la.lv/feed") }}
+            >
+              <Text style={baseStyles.textB}>la.lv</Text>
+            </TouchableOpacity>
+          )}
           {storedValues.newsSite == "text" ? (
             <TouchableOpacity
               style={[baseStyles.buttonBase, styles.buttonSmallHeight]}
