@@ -11,7 +11,7 @@ const ExtraContentScreen = ({ navigation }) => {
   function buyContent(color) {
     console.log(color)
     AsyncStorage.setItem("boughtDesigns", storedValues.boughtDesigns + color + ",");
-    storedValues.bgColor = color
+    storedValues.boughtDesigns = storedValues.boughtDesigns + color + ","
     setShowBoughtPopUp(true);
   }
 
@@ -131,6 +131,14 @@ const ExtraContentScreen = ({ navigation }) => {
         <View style={styles.container}>
           <TouchableOpacity
             style={[baseStyles.buttonBase, baseStyles.buttonWide, styles.clearPurchases]}
+            // onPress={clearPurchases}
+          >
+            <Text style={baseStyles.textB}>Remove adds</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.container}>
+          <TouchableOpacity
+            style={[baseStyles.buttonBase, baseStyles.buttonWide]}
             onPress={clearPurchases}
           >
             <Text style={baseStyles.textB}>Clear purchases</Text>
