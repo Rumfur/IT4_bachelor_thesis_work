@@ -10,17 +10,6 @@ def getNewsTitles(link):
     titles = [[str(i.get("title")).replace('«', '"').replace('»', '"') for i in entries]]
     return titles
 
-# # debug
-# res = {
-#         "https://www.lsm.lv/rss/": getNewsTitles("https://www.lsm.lv/rss/"),
-#         "https://www.delfi.lv/rss/index.xml": getNewsTitles("https://www.delfi.lv/rss/index.xml"),
-#         "https://feeds.feedburner.com/Apollolv-AllArticles": getNewsTitles("https://feeds.feedburner.com/Apollolv-AllArticles"),
-#         "https://www.la.lv/feed": getNewsTitles("https://www.la.lv/feed")
-#         }
-# for site in res:
-#     print(site)
-#     print(res[site])
-
 @app.get("/run")
 def read_user():
     return {
@@ -42,4 +31,16 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# # debug
+# res = {
+#         "https://www.lsm.lv/rss/": getNewsTitles("https://www.lsm.lv/rss/"),
+#         "https://www.delfi.lv/rss/index.xml": getNewsTitles("https://www.delfi.lv/rss/index.xml"),
+#         "https://feeds.feedburner.com/Apollolv-AllArticles": getNewsTitles("https://feeds.feedburner.com/Apollolv-AllArticles"),
+#         "https://www.la.lv/feed": getNewsTitles("https://www.la.lv/feed")
+#         }
+# for site in res:
+#     print(site)
+#     print(res[site])
+
+# Command to run server:
 # uvicorn FeedFetcher:app --host 127.0.0.1 --port 80

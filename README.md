@@ -23,7 +23,10 @@ Step 5 : in backend folder install requirenments:
 - pip install uvicorn
 - pip install feedparser
 
-Step 6 : start the project:
+Step 6 : start the backend server from terminal in backend folder:
+- uvicorn FeedFetcher:app --host 127.0.0.1 --port 80
+
+Step 7 : start the project from terminal in project folder directory:
 - expo start
 
 

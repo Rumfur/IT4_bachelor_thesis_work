@@ -13,9 +13,6 @@ const NewsArticleScreen = ({ navigation }) => {
   const selectNewsSite = (newsSite) => {
     AsyncStorage.setItem("newsSite", newsSite)
     .then(
-      console.log("News site selected: " + newsSite)
-    )
-    .then(
       storedValues.newsSite = newsSite
     )
     .then(
@@ -55,6 +52,7 @@ const NewsArticleScreen = ({ navigation }) => {
       style={styles.gradientContainer}
     >
       <View style={baseStyles.container}>
+        {storedValues.showAdds && <Text style={baseStyles.addBanner}>ADVERTISEMENT</Text>}
         <Text style={baseStyles.titleText}>News And Articles</Text>
         {/* news site buttons*/}
         <View style={styles.buttonContainer}>
@@ -185,6 +183,7 @@ const NewsArticleScreen = ({ navigation }) => {
           >
           <Text style={baseStyles.textB}>Go back to menu</Text>
         </TouchableOpacity>
+        {storedValues.showAdds && <Text style={baseStyles.addBanner}>ADVERTISEMENT</Text>}
         {/* pop up screen for selection confirmation*/}
         <Modal
           animationType="slide"
@@ -222,9 +221,15 @@ const NewsArticleScreen = ({ navigation }) => {
         >
           <View style={baseStyles.modalContainer}>
             <View style={baseStyles.modalContent}>
-              <Text style={baseStyles.modalTitle}>
-                Text accepted!
-              </Text> 
+              {textBoxText.trim() == "" ? (
+                <Text style={baseStyles.modalTitle}>
+                  Please input something into the text!
+                </Text> 
+              ) : (
+                <Text style={baseStyles.modalTitle}>
+                  Text accepted!
+                </Text> 
+              )}
               <TouchableOpacity
                 style={[baseStyles.buttonPopUpClose]}
                 onPress={() => setTextModalVisible(false)}

@@ -19,7 +19,8 @@ export let storedValues = {
   newsSite: "text", 
   newsArticle: 0,
   newsData: {},
-  selectedText: ""
+  selectedText: "",
+  showAdds: true,
 }
 
 const fetchNewsSiteRss = () => {
@@ -44,6 +45,7 @@ export const syncStoredData = async () => {
     storedValues.newsSite = await AsyncStorage.getItem("newsSite")
     storedValues.newsArticle = parseInt(await AsyncStorage.getItem("newsArticle"))
     storedValues.selectedText = parseInt(await AsyncStorage.getItem("selectedText"))
+    storedValues.showAdds = (await AsyncStorage.getItem("showAdds") == "true")
   } catch (error) {
     console.log("Error in async data: " + error)
   } 
@@ -91,6 +93,10 @@ function checkIfDataValid() {
     AsyncStorage.setItem("selectedText", "")
     storedValues.newsArticle = ""
   }
+  if (storedValues.showAdds == null) {
+    AsyncStorage.setItem("showAdds", "true")
+    storedValues.showAdds = true
+  }
 }
 
 async function validateAsyncStorage() {
@@ -102,25 +108,21 @@ async function validateAsyncStorage() {
   }
   if (await AsyncStorage.getItem("newsSite") == null) {
     AsyncStorage.setItem("newsSite", "text")
-    storedValues.newsSite = "text"
   }
   if (await AsyncStorage.getItem("newsArticle") == null) {
     AsyncStorage.setItem("newsArticle", "0")
-    storedValues.newsArticle = 0
   }
   if (await AsyncStorage.getItem("selectedText") == null) {
     AsyncStorage.setItem("selectedText", "")
-    storedValues.newsArticle = ""
+  }
+  if (await AsyncStorage.getItem("showAdds") == null) {
+    AsyncStorage.setItem("showAdds", true)
   }
 }
 
 export async function setValues(){
   await syncStoredData().then(
     checkIfDataValid()
-  ).then(
-    console.log("Last check")
-  ).then(
-    console.log(storedValues)
   )
 }
 
@@ -132,12 +134,30 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="StartScreen">
-      <Stack.Screen name="StartScreen" component={StartScreen} options={{ title: "Start Screen",  headerShown: false }} />
-        <Stack.Screen name="MainMenu" component={MainMenuScreen} options={{ title: "Main Menu",  headerShown: false }} />
-        <Stack.Screen name="SpeedTypingTest" component={SpeedTypingTestScreen} options={{ title: "Speed Typing Test",  headerShown: false }} />
-        <Stack.Screen name="NewsArticles" component={NewsArticleScreen} options={{ title: "News Article Select",  headerShown: false }} />
-        <Stack.Screen name="ExtraContent" component={ExtraContentScreen} options={{ title: "Extra Content",  headerShown: false }} />
-        <Stack.Screen name="Settings" component={ProfileScreen} options={{ title: "Settings",  headerShown: false }} />
+        <Stack.Screen
+          name="StartScreen"  component={StartScreen}
+          options={{ title: "Start Screen",  headerShown: false }}
+        />
+        <Stack.Screen
+          name="MainMenu" component={MainMenuScreen}
+          options={{ title: "Main Menu",  headerShown: false }}
+        />
+        <Stack.Screen
+          name="SpeedTypingTest" component={SpeedTypingTestScreen}
+          options={{ title: "Speed Typing Test",  headerShown: false }}
+        />
+        <Stack.Screen
+          name="NewsArticles" component={NewsArticleScreen}
+          options={{ title: "News Article Select",  headerShown: false }}
+        />
+        <Stack.Screen
+          name="ExtraContent" component={ExtraContentScreen}
+          options={{ title: "Extra Content",  headerShown: false }}
+        />
+        <Stack.Screen
+          name="Settings" component={ProfileScreen}
+          options={{ title: "Settings",  headerShown: false }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -257,4 +277,14 @@ export const baseStyles = StyleSheet.create({
   buttonD5: {
     backgroundColor: "purple"
   },
+  addBanner: {
+    backgroundColor: "black",
+    color: "white",
+    fontSize: 16,
+    fontWeight: "bold",
+    textAlign: 'center',
+    textAlignVertical: 'center',
+    width: "100%",
+    padding: 30
+  }
 });

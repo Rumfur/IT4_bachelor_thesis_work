@@ -6,19 +6,26 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
 function setlectTestText() {
+  let requestedText = ""
   try {
     if (storedValues.newsSite == "text") {
       if (storedValues.selectedText.trim() == "") {
-        return "This is temporary text for the speed typing test that is used in case no text is supplied from the user."
+        requestedText = "This is temporary text for the speed typing test that is used in case no text is supplied from the user."
       } else {
-        return storedValues.selectedText
+        requestedText = storedValues.selectedText
       }
     } else {
-        return storedValues.newsData[storedValues.newsSite][storedValues.newsArticle]
+        requestedText = toString(storedValues.newsData[storedValues.newsSite][storedValues.newsArticle])
     }
   } catch (error) {
     return "Fetching article from news data failed. Write this text instead!"
   }
+  console.log("Text before undefined check : " + requestedText)
+  if (requestedText == "[object Undefined]") {
+    requestedText = "Fetching article from news data failed. Write this text instead!"
+  }
+  console.log("Text before send : " + requestedText)
+  return requestedText
 }
 
 export default function SpeedTypingTestScreen({ navigation }) {
@@ -34,11 +41,15 @@ export default function SpeedTypingTestScreen({ navigation }) {
   const [showResultsModal, setShowResultsModal] = useState(false);
   const inputRef = useRef(null);
 
-  const testTextOriginal = toString(setlectTestText())
-  let textUserWritten = ""
-  let textWordsWritten = ""
-  let textCurrentWord = ""
-  let textWordsLeft = testTextOriginal.substring(0, testTextOriginal.indexOf(" "))
+  const testTextOriginal = setlectTestText()
+  console.log("Receaved text: " + testTextOriginal)
+  const originalTextWordCount = testTextOriginal.split(" ").length
+
+  const [textCurrentWord, setTextCurrentWord] = useState(testTextOriginal.split(" ")[0]);
+  const [textWordsLeft, setTextWordsLeft] = useState(testTextOriginal.split(" ").slice(1));
+  const [textWordsWritten, setTextWordsWritten] = useState("");
+  const [textLeftIndex, setTextLeftIndex] = useState(0);
+
 
   const textInput = (text) => {
     if (!started) {
@@ -46,19 +57,19 @@ export default function SpeedTypingTestScreen({ navigation }) {
       setStartTime(Date.now());
     }
     setElapsedTime((Date.now() - startTime) / 1000); // seconds
-
-    if (text[text.length-1] == " ") {
-      textUserWritten = textUserWritten + text
-      console.log(textUserWritten)
+    if (text.length > textCurrentWord.length && text[text.length-1] == " ") {
+      setTextWordsWritten(textWordsWritten + text)
+      setTextCurrentWord(textWordsLeft[textLeftIndex])
+      textWordsLeft[textLeftIndex] = ""
+      setTextLeftIndex(textLeftIndex + 1)
       text = ""
-      const typedWordCount = textUserWritten.trim().split(" ").length;
+      const typedWordCount = textWordsWritten.trim().split(" ").length;
       const wordsPerMin = Math.round((typedWordCount / elapsedTime) * 60);
       setTypingSpeed(wordsPerMin);
       setTotalTypedWords(typedWordCount);
-      setTotalTypedChars(textUserWritten.trim().length);
+      setTotalTypedChars(textWordsWritten.trim().length);
 
-      // if text length == required text length, end test
-      if (textWordsLeft == "") {
+      if (textWordsWritten.split(" ").length == originalTextWordCount) {
         setFinished(true);
         inputRef.current.blur();
         setShowResultsModal(true);
@@ -79,6 +90,10 @@ export default function SpeedTypingTestScreen({ navigation }) {
     setWrongWords(0);
     setFinished(false);
     setShowResultsModal(false);
+    setTextCurrentWord(testTextOriginal.split(" ")[0]);
+    setTextWordsLeft(testTextOriginal.split(" ").slice(1));
+    setTextWordsWritten("");
+    setTextLeftIndex(0);
   };
 
   return (
@@ -104,10 +119,10 @@ export default function SpeedTypingTestScreen({ navigation }) {
           </View>
         ) : (
           <View>
-            <View style={styles.container}>
-              <Text style={baseStyles.textB}>{textWordsWritten}</Text>
-              <Text style={baseStyles.textB}>{textCurrentWord}</Text>
-              <Text style={baseStyles.textB}>{textWordsLeft}</Text>
+            <View style={styles.rowContainer}>
+              <Text style={styles.textLG}>{textWordsWritten}</Text>
+              <Text style={styles.textW}>{textCurrentWord}</Text>
+              <Text style={styles.textLG}>{textWordsLeft.join(" ")}</Text>
             </View>
             <TextInput
               ref={inputRef}
@@ -142,13 +157,16 @@ export default function SpeedTypingTestScreen({ navigation }) {
         >
           <View style={baseStyles.modalContainer}>
             <View style={baseStyles.modalContent}>
-              <Text style={baseStyles.modalTitle}>Test Results</Text>
+              <Text style={baseStyles.modalTitle}>Test Results</Text>   
+
               <Text>Words per minute: {typingSpeed}</Text>
               <Text>Characters per minute: {Math.round((totalTypedChars / totalTypedWords) * typingSpeed)}</Text>
-              <Text>Total written characters: {totalTypedChars}</Text>
               <Text>Total written words: {totalTypedWords}</Text>
               <Text>Words written wrong: {wrongWords}</Text>
-              <Text>Accuracy: {(totalTypedWords - wrongWords) / totalTypedWords * 100}%</Text>
+              <Text>Total written characters: {totalTypedChars}</Text>
+              <Text>Error rate: {5} per 100 words</Text>
+              <Text>Accuracy: 42%</Text> {/*{(totalTypedWords - wrongWords) / totalTypedWords * 100}%*/}
+              <Text>Modifications made: {4}</Text>
               <TouchableOpacity
                 style={[baseStyles.buttonPopUpClose]}
                 onPress={() => setShowResultsModal(false)}
@@ -203,5 +221,14 @@ const styles = StyleSheet.create({
   },
   maxWidth: {
     width: "100%"
+  },
+  textW: {
+    color: "white",
+    fontStyle: "bold",
+    fontSize: 20
+  },
+  textLG: {
+    color: "lightgray",
+    margin: 5
   }
 });

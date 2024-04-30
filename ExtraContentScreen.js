@@ -19,7 +19,14 @@ const ExtraContentScreen = ({ navigation }) => {
     AsyncStorage.removeItem("boughtDesigns");
     AsyncStorage.setItem("bgColor", "blackIlightgray");
     AsyncStorage.setItem("boughtDesigns", "blackIlightgray,")
+    AsyncStorage.setItem("showAdds", "true")
     syncStoredData();
+    navigation.navigate("StartScreen")
+  }
+
+  function setShowAdds() {
+    AsyncStorage.setItem("showAdds", "false")
+    storedValues.showAdds = false
     navigation.navigate("StartScreen")
   }
 
@@ -29,6 +36,7 @@ const ExtraContentScreen = ({ navigation }) => {
       style={styles.gradientContainer}
     >
       <View style={styles.container}>
+        {storedValues.showAdds && <Text style={baseStyles.addBanner}>ADVERTISEMENT</Text>}
         <Text style={baseStyles.titleText}>Extra Content</Text>
         <View style={styles.designContainer}>
           {!storedValues.boughtDesigns.split(",").includes("blackIlightgray") ? ( // black
@@ -129,14 +137,23 @@ const ExtraContentScreen = ({ navigation }) => {
           )}
         </View>
         <View style={styles.container}>
-          <TouchableOpacity
-            style={[baseStyles.buttonBase, baseStyles.buttonWide, styles.clearPurchases]}
-            // onPress={clearPurchases}
-          >
-            <Text style={baseStyles.textB}>Remove adds</Text>
-          </TouchableOpacity>
+          {storedValues.showAdds == true ? (
+            <TouchableOpacity
+              style={[baseStyles.buttonBase, baseStyles.buttonWide, styles.clearPurchases]}
+              onPress={() => setShowAdds()}
+            >
+              <Text style={baseStyles.textB}>Remove adds (2€/month)</Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              style={[baseStyles.buttonBase, baseStyles.buttonWide, styles.clearPurchases]}
+              disabled={true}
+            >
+              <Text style={baseStyles.textB}>Adds removed</Text>
+            </TouchableOpacity>
+          )}
         </View>
-        <View style={styles.container}>
+                  <View style={styles.container}>
           <TouchableOpacity
             style={[baseStyles.buttonBase, baseStyles.buttonWide]}
             onPress={clearPurchases}
@@ -151,6 +168,7 @@ const ExtraContentScreen = ({ navigation }) => {
       >
         <Text style={baseStyles.textB}>Go back to menu</Text>
       </TouchableOpacity>
+      {storedValues.showAdds && <Text style={baseStyles.addBanner}>ADVERTISEMENT</Text>}
       <Modal
         animationType="slide"
         transparent={true}
@@ -159,6 +177,7 @@ const ExtraContentScreen = ({ navigation }) => {
       >
         <View style={baseStyles.modalContainer}>
           <View style={baseStyles.modalContent}>
+            {storedValues.showAdds && <Text style={baseStyles.addBanner}>ADVERTISEMENT</Text>}
             <Text style={baseStyles.modalTitle}>DESIGN BOUGHT!</Text>
             <Text>You can see it in your profile page.</Text>
             <TouchableOpacity
@@ -167,6 +186,7 @@ const ExtraContentScreen = ({ navigation }) => {
             >
               <Text style={baseStyles.textB}>X</Text>
             </TouchableOpacity>
+            {storedValues.showAdds && <Text style={baseStyles.addBanner}>ADVERTISEMENT</Text>}
           </View>
         </View>
       </Modal>
