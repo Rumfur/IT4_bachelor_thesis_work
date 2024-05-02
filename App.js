@@ -23,6 +23,15 @@ export let storedValues = {
   showAdds: true,
 }
 
+// export async function resetStoredValues() {
+//   AsyncStorage.setItem("bgColor", "blackIlightgray")
+//   AsyncStorage.setItem("boughtDesigns", "blackIlightgray,")
+//   AsyncStorage.setItem("newsSite", "text")
+//   AsyncStorage.setItem("newsArticle", "0")
+//   AsyncStorage.setItem("selectedText", "")
+//   AsyncStorage.setItem("showAdds", "true")
+// }
+
 const fetchNewsSiteRss = () => {
   var feed = "http://127.0.0.1/run";
   fetch(feed)
@@ -68,6 +77,10 @@ export const syncStoredData = async () => {
   if (storedValues.selectedText == null) {
     AsyncStorage.setItem("selectedText", "")
     storedValues.newsArticle = ""
+  }
+  if (storedValues.showAdds == null) {
+    AsyncStorage.setItem("showAdds", "true")
+    storedValues.showAdds = "true"
   }
   console.log(storedValues)
 };
