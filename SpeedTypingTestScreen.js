@@ -116,27 +116,21 @@ export default function SpeedTypingTestScreen({ navigation }) {
     >
       {storedValues.showAdds && <Text style={baseStyles.addBanner}>ADVERTISEMENT</Text>}
       <View style={baseStyles.container}>
-        {started ? (
-          <Text style={styles.typingSpeed}>{typingSpeed} wpm</Text>
-        ) : (
-          null
-        )}
         {finished ? (
           <View>
             <Text style={styles.originalText}>{testTextOriginal}</Text>
-            <TouchableOpacity
-              style={[baseStyles.buttonBase, baseStyles.buttonWide]}
-              onPress={resetTestValues}
-            >
-              <Text style={baseStyles.textB}>Restart test</Text>
-            </TouchableOpacity>
           </View>
         ) : (
-          <View>
+          <View style={baseStyles.container}>
+            {started ? (
+              <Text style={styles.typingSpeed}>{typingSpeed} wpm</Text>
+            ) : (
+              null
+            )}
             <View style={styles.rowContainer}>
-              <Text style={styles.textLG}>{textWordsWritten}</Text>
+              <Text style={styles.textLG}>{textWordsWritten.split(" ").slice(textWordsWritten.split(" ").length-4).join(" ")}</Text>
               <Text style={styles.textW}>{textCurrentWord}</Text>
-              <Text style={styles.textLG}>{textWordsLeft.join(" ")}</Text>
+              <Text style={styles.textLG}>{textWordsLeft.slice(textWordsWritten.split(" ").length-1, textWordsWritten.split(" ").length + 3).join(" ")}</Text>
             </View>
             <TextInput
               ref={inputRef}
@@ -147,16 +141,17 @@ export default function SpeedTypingTestScreen({ navigation }) {
               multiline={true}
               autoFocus={true}
               editable={!finished}
+              autoCapitalize="none"
             />
-            <TouchableOpacity
-              style={[baseStyles.buttonBase, baseStyles.buttonWide]}
-              disabled={!started}
-              onPress={resetTestValues}
-            >
-              <Text style={baseStyles.textB}>Restart test</Text>
-            </TouchableOpacity>
           </View>
         )}
+        <TouchableOpacity
+          style={[baseStyles.buttonBase, baseStyles.buttonWide]}
+          disabled={!started}
+          onPress={resetTestValues}
+        >
+          <Text style={baseStyles.textB}>Restart test</Text>
+        </TouchableOpacity>
         <TouchableOpacity
           style={[baseStyles.buttonTransparent]}
           onPress={() => navigation.navigate("MainMenu")}
@@ -221,6 +216,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     height: 150,
     width: "100%",
+    height: "10%",
     color: "white",
     backgroundColor: "gray",
     borderColor: "black",
@@ -228,11 +224,13 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     paddingHorizontal: 10,
     textAlignVertical: "top",
+    textAlign: "center"
   },
   typingSpeed: {
     fontSize: 18,
     marginBottom: 10,
     textAlign: "center",
+    color: "white"
   },
   maxWidth: {
     width: "100%"
