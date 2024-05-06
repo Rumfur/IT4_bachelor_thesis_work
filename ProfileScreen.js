@@ -16,8 +16,8 @@ const ProfileScreen = ({ navigation }) => {
       colors={storedValues.bgColor.split("I")}
       style={styles.gradientContainer}
     >
+      {storedValues.showAdds && <Text style={baseStyles.addBanner}>ADVERTISEMENT</Text>}
       <View style={baseStyles.container}>
-        {storedValues.showAdds && <Text style={baseStyles.addBanner}>ADVERTISEMENT</Text>}
         <Text style={baseStyles.titleText}>Profile Settings</Text>
         <View style={styles.designContainer}>
           {storedValues.boughtDesigns.split(",").includes("blackIlightgray") ? (
@@ -129,8 +129,8 @@ const ProfileScreen = ({ navigation }) => {
         >
           <Text style={styles.buttonTextB}>Go back to menu</Text>
         </TouchableOpacity>
-        {storedValues.showAdds && <Text style={baseStyles.addBanner}>ADVERTISEMENT</Text>}
       </View>
+      {storedValues.showAdds && <Text style={baseStyles.addBanner}>ADVERTISEMENT</Text>}
     </LinearGradient>
   );
 };

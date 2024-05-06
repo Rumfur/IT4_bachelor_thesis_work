@@ -51,8 +51,8 @@ const NewsArticleScreen = ({ navigation }) => {
       colors={storedValues.bgColor.split("I")}
       style={styles.gradientContainer}
     >
+      {storedValues.showAdds && <Text style={baseStyles.addBanner}>ADVERTISEMENT</Text>}
       <View style={baseStyles.container}>
-        {storedValues.showAdds && <Text style={baseStyles.addBanner}>ADVERTISEMENT</Text>}
         <Text style={baseStyles.titleText}>News And Articles</Text>
         {/* news site buttons*/}
         <View style={styles.buttonContainer}>
@@ -183,7 +183,6 @@ const NewsArticleScreen = ({ navigation }) => {
           >
           <Text style={baseStyles.textB}>Go back to menu</Text>
         </TouchableOpacity>
-        {storedValues.showAdds && <Text style={baseStyles.addBanner}>ADVERTISEMENT</Text>}
         {/* pop up screen for selection confirmation*/}
         <Modal
           animationType="slide"
@@ -240,6 +239,7 @@ const NewsArticleScreen = ({ navigation }) => {
           </View>
         </Modal>
       </View>
+      {storedValues.showAdds && <Text style={baseStyles.addBanner}>ADVERTISEMENT</Text>}
     </LinearGradient>
   );
 };

@@ -35,8 +35,8 @@ const ExtraContentScreen = ({ navigation }) => {
       colors={storedValues.bgColor.split("I")}
       style={styles.gradientContainer}
     >
+      {storedValues.showAdds && <Text style={baseStyles.addBanner}>ADVERTISEMENT</Text>}
       <View style={styles.container}>
-        {storedValues.showAdds && <Text style={baseStyles.addBanner}>ADVERTISEMENT</Text>}
         <Text style={baseStyles.titleText}>Extra Content</Text>
         <View style={styles.designContainer}>
           {!storedValues.boughtDesigns.split(",").includes("blackIlightgray") ? ( // black

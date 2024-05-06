@@ -10,8 +10,8 @@ const MainMenuScreen = ({ navigation }) => {
       colors={storedValues.bgColor.split("I")}
       style={styles.gradientContainer}
     >
+      {storedValues.showAdds && <Text style={baseStyles.addBanner}>ADVERTISEMENT</Text>}
       <View style={baseStyles.container}>
-        {storedValues.showAdds && <Text style={baseStyles.addBanner}>ADVERTISEMENT</Text>}
         <Text style={[baseStyles.titleText, baseStyles.titleTextBig]}>Speed Typing Prototype</Text>
         <View style={styles.buttonContainer}>
           <TouchableOpacity
@@ -35,8 +35,8 @@ const MainMenuScreen = ({ navigation }) => {
             <Text style={[baseStyles.textB, styles.textBig]}>⚙</Text>
           </TouchableOpacity>
         </View>
-        {storedValues.showAdds && <Text style={baseStyles.addBanner}>ADVERTISEMENT</Text>}
       </View>
+      {storedValues.showAdds && <Text style={baseStyles.addBanner}>ADVERTISEMENT</Text>}
     </LinearGradient>
   );
 };
