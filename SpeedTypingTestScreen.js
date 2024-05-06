@@ -39,11 +39,15 @@ export default function SpeedTypingTestScreen({ navigation }) {
   const [wrongWords, setWrongWords] = useState(0);
   const [finished, setFinished] = useState(false);
   const [showResultsModal, setShowResultsModal] = useState(false);
+  const [modificationMade, setModificationMade] = useState(0);
+  const [currentInputLength, setCurrentInputLength] = useState(0);
+
   const inputRef = useRef(null);
 
   const testTextOriginal = setlectTestText()
   console.log("Receaved text: " + testTextOriginal)
   const originalTextWordCount = testTextOriginal.split(" ").length
+  const originalWords = testTextOriginal.split(" ")
 
   const [textCurrentWord, setTextCurrentWord] = useState(testTextOriginal.split(" ")[0]);
   const [textWordsLeft, setTextWordsLeft] = useState(testTextOriginal.split(" ").slice(1));
@@ -56,9 +60,16 @@ export default function SpeedTypingTestScreen({ navigation }) {
       setStarted(true);
       setStartTime(Date.now());
     }
+    if (text.length < currentInputLength) {
+      setModificationMade(modificationMade + 1); // times backspace pressed
+    }
     setElapsedTime((Date.now() - startTime) / 1000); // seconds
     if (text.length > textCurrentWord.length && text[text.length-1] == " ") {
       setTextWordsWritten(textWordsWritten + text)
+      if (originalWords[textWordsWritten.split(" ").length - 1] != text.trim()) {
+        setWrongWords(wrongWords + 1)
+        console.log(originalWords[textWordsWritten.split(" ").length - 1] + " != " + text.trim() + " | WW: " + wrongWords)
+      }
       setTextCurrentWord(textWordsLeft[textLeftIndex])
       textWordsLeft[textLeftIndex] = ""
       setTextLeftIndex(textLeftIndex + 1)
@@ -75,7 +86,7 @@ export default function SpeedTypingTestScreen({ navigation }) {
         setShowResultsModal(true);
       }
     }
-
+    setCurrentInputLength(text.length)
     setTextBoxText(text);
   };
 
@@ -94,6 +105,8 @@ export default function SpeedTypingTestScreen({ navigation }) {
     setTextWordsLeft(testTextOriginal.split(" ").slice(1));
     setTextWordsWritten("");
     setTextLeftIndex(0);
+    setModificationMade(0);
+    setCurrentInputLength(0);
   };
 
   return (
@@ -101,6 +114,7 @@ export default function SpeedTypingTestScreen({ navigation }) {
       colors={storedValues.bgColor.split("I")}
       style={styles.gradientContainer}
     >
+      {storedValues.showAdds && <Text style={baseStyles.addBanner}>ADVERTISEMENT</Text>}
       <View style={baseStyles.container}>
         {started ? (
           <Text style={styles.typingSpeed}>{typingSpeed} wpm</Text>
@@ -164,9 +178,9 @@ export default function SpeedTypingTestScreen({ navigation }) {
               <Text>Total written words: {totalTypedWords}</Text>
               <Text>Words written wrong: {wrongWords}</Text>
               <Text>Total written characters: {totalTypedChars}</Text>
-              <Text>Error rate: {5} per 100 words</Text>
-              <Text>Accuracy: 42%</Text> {/*{(totalTypedWords - wrongWords) / totalTypedWords * 100}%*/}
-              <Text>Modifications made: {4}</Text>
+              <Text>Error rate: {Math.round(wrongWords / totalTypedWords * (100 / totalTypedWords))} per 100 words</Text>
+              <Text>Accuracy: {Math.round((totalTypedWords - wrongWords) / totalTypedWords * 100)}%</Text>
+              <Text>Modifications made: {modificationMade}</Text>
               <TouchableOpacity
                 style={[baseStyles.buttonPopUpClose]}
                 onPress={() => setShowResultsModal(false)}
@@ -177,6 +191,7 @@ export default function SpeedTypingTestScreen({ navigation }) {
           </View>
         </Modal>
       </View>
+      {storedValues.showAdds && <Text style={baseStyles.addBanner}>ADVERTISEMENT</Text>}
     </LinearGradient>
   );
 }
