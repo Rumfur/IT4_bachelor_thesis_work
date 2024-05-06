@@ -255,7 +255,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   buttonSmallHeight: {
-    height: "20%",
+    height: "25%",
   },
   buttonContainer: {
     flexDirection: "row",

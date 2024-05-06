@@ -225,7 +225,8 @@ const styles = StyleSheet.create({
   },
   clearPurchases: {
     marginTop: 100,
-    width: "100%"
+    width: "100%",
+    height: "35%"
   },
   buttonTextW: {
     color: "white",
