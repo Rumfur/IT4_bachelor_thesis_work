@@ -9,32 +9,20 @@ function setlectTestText() {
   let requestedText = ""
   try {
     if (storedValues.newsSite == "text") {
-      console.log("We are taking text")
       if (storedValues.selectedText.trim() == "") {
         requestedText = "This is temporary text for the speed typing test that is used in case no text is supplied from the user."
       } else {
         requestedText = storedValues.selectedText
       }
     } else {
-        console.log("From " + storedValues.newsSite + " article no " + storedValues.newsArticle)
-        console.log("FULL:")
-        console.log(storedValues.newsData)
-        console.log("NEWS SITE:")
-        console.log(storedValues.newsData[storedValues.newsSite])
-        console.log("ARTICLE")
-        console.log(storedValues.newsData[storedValues.newsSite][0][storedValues.newsArticle])
         requestedText = storedValues.newsData[storedValues.newsSite][0][storedValues.newsArticle]
-        console.log("Receaved text: " + requestedText)
     }
   } catch (error) {
-    console.log("Error: " + error)
     return "Fetching article from news data failed. Write this text instead!"
   }
-  console.log("Text before undefined check : " + requestedText)
   if (requestedText == "[object Undefined]") {
     requestedText = "Fetching article from news data failed. Write this text instead!"
   }
-  console.log("Text before send : " + requestedText)
   return requestedText
 }
 
@@ -55,7 +43,6 @@ export default function SpeedTypingTestScreen({ navigation }) {
   const inputRef = useRef(null);
 
   const testTextOriginal = setlectTestText()
-  console.log("Receaved text: " + testTextOriginal)
   const originalTextWordCount = testTextOriginal.split(" ").length
   const originalWords = testTextOriginal.split(" ")
 
@@ -78,7 +65,6 @@ export default function SpeedTypingTestScreen({ navigation }) {
       setTextWordsWritten(textWordsWritten + text)
       if (originalWords[textWordsWritten.split(" ").length - 1] != text.trim()) {
         setWrongWords(wrongWords + 1)
-        console.log(originalWords[textWordsWritten.split(" ").length - 1] + " != " + text.trim() + " | WW: " + wrongWords)
       }
       setTextCurrentWord(textWordsLeft[textLeftIndex])
       textWordsLeft[textLeftIndex] = ""
