@@ -5,7 +5,7 @@ from starlette.middleware.cors import CORSMiddleware
 app = FastAPI()
 
 def getNewsTitles(link):
-    news_feed = feedparser.parse("https://www.lsm.lv/rss/")
+    news_feed = feedparser.parse(link)
     entries = news_feed.entries
     titles = [[str(i.get("title")).replace('«', '"').replace('»', '"') for i in entries]]
     return titles
