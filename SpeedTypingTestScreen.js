@@ -9,15 +9,25 @@ function setlectTestText() {
   let requestedText = ""
   try {
     if (storedValues.newsSite == "text") {
+      console.log("We are taking text")
       if (storedValues.selectedText.trim() == "") {
         requestedText = "This is temporary text for the speed typing test that is used in case no text is supplied from the user."
       } else {
         requestedText = storedValues.selectedText
       }
     } else {
-        requestedText = toString(storedValues.newsData[storedValues.newsSite][storedValues.newsArticle])
+        console.log("From " + storedValues.newsSite + " article no " + storedValues.newsArticle)
+        console.log("FULL:")
+        console.log(storedValues.newsData)
+        console.log("NEWS SITE:")
+        console.log(storedValues.newsData[storedValues.newsSite])
+        console.log("ARTICLE")
+        console.log(storedValues.newsData[storedValues.newsSite][0][storedValues.newsArticle])
+        requestedText = storedValues.newsData[storedValues.newsSite][0][storedValues.newsArticle]
+        console.log("Receaved text: " + requestedText)
     }
   } catch (error) {
+    console.log("Error: " + error)
     return "Fetching article from news data failed. Write this text instead!"
   }
   console.log("Text before undefined check : " + requestedText)
