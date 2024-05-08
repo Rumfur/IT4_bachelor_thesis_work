@@ -1,19 +1,22 @@
 import React, { useState } from "react";
 import { View, StyleSheet, Modal, TextInput, Text, TouchableOpacity } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { baseStyles, storedValues } from "./App";
+import { baseStyles, storedValues, AdvertisementBanner } from "./App";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const NewsArticleScreen = ({ navigation }) => {
-  const [currentArticleNo, setSelectedArticleNo] = useState(parseInt(storedValues.newsArticle))
+  const [currentArticleNo, setCurrentArticleNo] = useState(parseInt(storedValues.newsArticle))
   const [modalVisible, setModalVisible] = useState(false);
   const [textBoxText, setTextBoxText] = useState("");
   const [textModalVisible, setTextModalVisible] = useState(false);
 
   const selectNewsSite = (newsSite) => {
+    storedValues.newsSite = newsSite
+    storedValues.selectArticleNo = 1
+    setCurrentArticleNo(1)
     AsyncStorage.setItem("newsSite", newsSite)
     .then(
-      storedValues.newsSite = newsSite
+      AsyncStorage.setItem("selectArticleNo", "1")
     )
     .then(
       setModalVisible(true)
@@ -25,18 +28,16 @@ const NewsArticleScreen = ({ navigation }) => {
   }
 
   const selectArticleNo = (articleNo) => {
-    console.log("article no: " + articleNo)
-    console.log("cur no: "+ currentArticleNo)
     let number = currentArticleNo + articleNo
-    console.log(number)
     if (number < 0) {
       number = 0
     }
-    AsyncStorage.setItem("newsArticle", toString(number))
+    setCurrentArticleNo(number)
+    AsyncStorage.setItem("newsArticle", number + "")
     .then(
-      storedValues.newsArticle = toString(number)
+      storedValues.newsArticle = number
     ).then(
-      setSelectedArticleNo(number)
+      setCurrentArticleNo(number)
     )
   };
 
@@ -146,7 +147,7 @@ const NewsArticleScreen = ({ navigation }) => {
               <Text style={[baseStyles.textB, styles.paddingTop]}>{currentArticleNo}</Text>
               <TouchableOpacity
                 style={[baseStyles.buttonBase, styles.buttonSmallHeight]}
-                onPress={() => { selectArticleNo(-1) }}
+                onPress={() => { selectArticleNo(1) }}
                 >
                 <Text style={baseStyles.textB}>→</Text>
               </TouchableOpacity>
@@ -267,19 +268,6 @@ const styles = StyleSheet.create({
   },
   paddingTop: {
     paddingTop: 30
-  },
-  inputBox: {
-    fontSize: 16,
-    height: 150,
-    width: "100%",
-    color: "white",
-    backgroundColor: "transparent",
-    borderColor: "black",
-    borderWidth: 3,
-    borderRadius: 20,
-    marginBottom: 20,
-    paddingHorizontal: 10,
-    textAlignVertical: "top",
   },
 });
 

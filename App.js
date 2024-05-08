@@ -17,7 +17,7 @@ export let storedValues = {
   bgColor: "blackIlightgray", 
   boughtDesigns: "blackIlightgray,", 
   newsSite: "text", 
-  newsArticle: 0,
+  newsArticle: 1,
   newsData: {},
   selectedText: "",
   showAdds: true,
@@ -71,7 +71,7 @@ export const syncStoredData = async () => {
     storedValues.newsSite = "text"
   }
   if (storedValues.newsArticle == null) {
-    AsyncStorage.setItem("newsArticle", "0")
+    AsyncStorage.setItem("newsArticle", "1")
     storedValues.newsArticle = 0
   }
   if (storedValues.selectedText == null) {
@@ -99,8 +99,8 @@ function checkIfDataValid() {
     storedValues.newsSite = "text"
   }
   if (storedValues.newsArticle == null) {
-    AsyncStorage.setItem("newsArticle", "0")
-    storedValues.newsArticle = 0
+    AsyncStorage.setItem("newsArticle", "1")
+    storedValues.newsArticle = 1
   }
   if (storedValues.selectedText == null) {
     AsyncStorage.setItem("selectedText", "")
@@ -123,7 +123,7 @@ async function validateAsyncStorage() {
     AsyncStorage.setItem("newsSite", "text")
   }
   if (await AsyncStorage.getItem("newsArticle") == null) {
-    AsyncStorage.setItem("newsArticle", "0")
+    AsyncStorage.setItem("newsArticle", "1")
   }
   if (await AsyncStorage.getItem("selectedText") == null) {
     AsyncStorage.setItem("selectedText", "")
@@ -140,6 +140,8 @@ export async function setValues(){
 }
 
 export default function App() {
+  AsyncStorage.setItem("newsArticle", "1")
+  storedValues.newsArticle = 1
   setValues()
   fetchNewsSiteRss()
   validateAsyncStorage()
@@ -299,5 +301,19 @@ export const baseStyles = StyleSheet.create({
     textAlignVertical: 'center',
     width: "100%",
     padding: 30
-  }
+  },
+  inputBox: {
+    fontSize: 16,
+    height: 150,
+    width: "100%",
+    height: "10%",
+    color: "white",
+    backgroundColor: "#444444",
+    borderColor: "black",
+    borderWidth: 1,
+    marginBottom: 20,
+    paddingHorizontal: 10,
+    textAlignVertical: "top",
+    textAlign: "center"
+  },
 });
