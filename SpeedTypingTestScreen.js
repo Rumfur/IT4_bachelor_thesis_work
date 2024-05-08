@@ -201,30 +201,22 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 10,
+    padding: 5,
+    backgroundColor: "black",
+    borderColor: "white",
+    borderWidth: 5,
+    borderRadius: 25,
+    marginBottom: 5
   },
   originalText: {
     fontSize: 24,
     marginBottom: 20,
     borderWidth: 5,
+    padding: 5,
     borderRadius: 25,
     textAlign: "center",
     fontFamily: "Roboto",
     backgroundColor: "white"
-  },
-  inputBox: {
-    fontSize: 16,
-    height: 150,
-    width: "100%",
-    height: "10%",
-    color: "white",
-    backgroundColor: "gray",
-    borderColor: "black",
-    borderWidth: 1,
-    marginBottom: 20,
-    paddingHorizontal: 10,
-    textAlignVertical: "top",
-    textAlign: "center"
   },
   typingSpeed: {
     fontSize: 18,

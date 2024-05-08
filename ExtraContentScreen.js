@@ -153,15 +153,15 @@ const ExtraContentScreen = ({ navigation }) => {
             </TouchableOpacity>
           )}
         </View>
-                  <View style={styles.container}>
+          <View style={styles.container}>
           <TouchableOpacity
             style={[baseStyles.buttonBase, baseStyles.buttonWide]}
             onPress={clearPurchases}
           >
             <Text style={baseStyles.textB}>Clear purchases</Text>
           </TouchableOpacity>
+          </View>
         </View>
-      </View>
       <TouchableOpacity
         style={[baseStyles.buttonTransparent]}
         onPress={() => navigation.navigate("MainMenu")}
