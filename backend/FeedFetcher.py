@@ -6,22 +6,11 @@ app = FastAPI()
 
 def getNewsTitles(link):
     news_feed = feedparser.parse(link)
-    entries = news_feed.entries
-    titles = [[str(i.get("title")).replace('«', '"').replace('»', '"') for i in entries]]
-    return titles
+    return [
+        [str(i.get("title")).replace('«', '"').replace('»', '"') for i in news_feed.entries]
+        ] # titles
 
-@app.get("/run")
-def read_user():
-    return {
-        "https://www.lsm.lv/rss/": getNewsTitles("https://www.lsm.lv/rss/"),
-        "https://www.delfi.lv/rss/index.xml": getNewsTitles("https://www.delfi.lv/rss/index.xml"),
-        "https://feeds.feedburner.com/Apollolv-AllArticles": getNewsTitles("https://feeds.feedburner.com/Apollolv-AllArticles"),
-        "https://www.la.lv/feed": getNewsTitles("https://www.la.lv/feed")
-        }
-
-origins = [
-    "http://localhost:19006"
-]
+origins = ["http://localhost:19006"]
 
 app.add_middleware(
     CORSMiddleware,
@@ -30,6 +19,15 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@app.get("/run")
+def read_user():
+    return {
+        "https://www.lsm.lv/rss/": getNewsTitles("https://www.lsm.lv/rss/"),
+        "https://www.delfi.lv/rss/index.xml": getNewsTitles("https://www.delfi.lv/rss/index.xml"),
+        "https://feeds.feedburner.com/Apollolv-AllArticles": getNewsTitles("https://feeds.feedburner.com/Apollolv-AllArticles"),
+        "https://www.la.lv/feed": getNewsTitles("https://www.la.lv/feed"),
+    }
 
 # # debug
 # res = {

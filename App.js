@@ -32,8 +32,8 @@ export let storedValues = {
 //   AsyncStorage.setItem("showAdds", "true")
 // }
 
-const fetchNewsSiteRss = () => {
-  var feed = "http://127.0.0.1/run";
+const fetchNewsSiteRss = () => { // used to get news values from backend
+  var feed = "http://127.0.0.1/run"; // url to backend
   fetch(feed)
       .then(response => response.text())
       .then(data => {
@@ -303,14 +303,15 @@ export const baseStyles = StyleSheet.create({
     padding: 30
   },
   inputBox: {
-    fontSize: 16,
+    fontSize: 20,
     height: 150,
     width: "100%",
     height: "10%",
     color: "white",
-    backgroundColor: "#444444",
+    backgroundColor: "gray",
     borderColor: "black",
     borderWidth: 1,
+    borderRadius: 20,
     marginBottom: 20,
     paddingHorizontal: 10,
     textAlignVertical: "top",

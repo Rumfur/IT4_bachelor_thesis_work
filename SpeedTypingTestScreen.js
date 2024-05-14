@@ -53,7 +53,7 @@ export default function SpeedTypingTestScreen({ navigation }) {
 
 
   const textInput = (text) => {
-    if (!started) {
+    if (!started) { // start timer only when test is started
       setStarted(true);
       setStartTime(Date.now());
     }
@@ -63,10 +63,10 @@ export default function SpeedTypingTestScreen({ navigation }) {
     setElapsedTime((Date.now() - startTime) / 1000); // seconds
     if (text.length > textCurrentWord.length && text[text.length-1] == " ") {
       setTextWordsWritten(textWordsWritten + text)
-      if (originalWords[textWordsWritten.split(" ").length - 1] != text.trim()) {
+      if (originalWords[textWordsWritten.split(" ").length - 1] != text.trim()) { // check if written word matches current word
         setWrongWords(wrongWords + 1)
       }
-      setTextCurrentWord(textWordsLeft[textLeftIndex])
+      setTextCurrentWord(textWordsLeft[textLeftIndex]) // set next word
       textWordsLeft[textLeftIndex] = ""
       setTextLeftIndex(textLeftIndex + 1)
       text = ""
@@ -115,6 +115,7 @@ export default function SpeedTypingTestScreen({ navigation }) {
         {finished ? (
           <View>
             <Text style={styles.originalText}>{testTextOriginal}</Text>
+            <Text style={[styles.originalText, styles.writtenText]}>{textWordsWritten}</Text>
           </View>
         ) : (
           <View style={baseStyles.container}>
@@ -130,7 +131,7 @@ export default function SpeedTypingTestScreen({ navigation }) {
             </View>
             <TextInput
               ref={inputRef}
-              style={styles.inputBox}
+              style={baseStyles.inputBox}
               onChangeText={textInput}
               value={textBoxText}
               placeholder="Start typing here..."
@@ -214,6 +215,11 @@ const styles = StyleSheet.create({
     fontFamily: "Roboto",
     backgroundColor: "white"
   },
+  writtenText: {
+    backgroundColor: "black",
+    color: "white",
+    borderBlockColor: "white"
+  },
   typingSpeed: {
     fontSize: 18,
     marginBottom: 10,
@@ -226,10 +232,11 @@ const styles = StyleSheet.create({
   textW: {
     color: "white",
     fontStyle: "bold",
-    fontSize: 20
+    fontSize: 24
   },
   textLG: {
     color: "lightgray",
-    margin: 5
+    margin: 5,
+    fontSize: 16
   }
 });

@@ -157,7 +157,7 @@ const NewsArticleScreen = ({ navigation }) => {
             <View style={styles.buttonContainer}>
               <View>
               <TextInput
-                style={styles.inputBox}
+                style={[baseStyles.inputBox, styles.midHeight]}
                 value={textBoxText}
                 onChangeText={textInput}
                 placeholder="Enter text you wish to speed type..."
@@ -269,6 +269,9 @@ const styles = StyleSheet.create({
   paddingTop: {
     paddingTop: 30
   },
+  midHeight: {
+    height: "50%"
+  }
 });
 
 export default NewsArticleScreen;
